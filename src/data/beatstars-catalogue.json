@@ -1,10 +1,10 @@
 {
-  "_generatedAt": "2026-09-15T10:35:09.694Z",
+  "_generatedAt": "2026-09-15T20:32:51.079Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
   "totals": {
-    "beats": 255,
+    "beats": 256,
     "kits": 5
   },
   "shown": {
@@ -12,16 +12,30 @@
     "kits": 5
   },
   "topBeat": {
-    "title": "fakemink + puresnow + 2016 type beat - \"gold glitter\"",
+    "title": "fakemink + easter pink type beat - \"go away\"",
     "artist": "Luka Rajhl",
-    "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njg5NDUyMTI2ODNsZmQvZmZnNGc1Z2pwZy5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1768945217000",
-    "stream": "https://main.v2.beatstars.com/stream?id=24727214&return=audio",
-    "total": "03:02",
-    "buyUrl": "https://www.beatstars.com/beat/fakemink-puresnow-2016-type-beat-gold-glitter-24727214"
+    "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy10cmFjayIsImtleSI6InByb2QvdHJhY2svYXJ0d29yay9USzIzODQ4MzEyL2YyZGU2YzE2MmRlYjg1MjJlMGI5YjExNGU2Y2ExNTU1LTEtMS0uanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1758391284550",
+    "stream": "https://main.v2.beatstars.com/stream?id=23848312&return=audio",
+    "total": "01:41",
+    "buyUrl": "https://www.beatstars.com/beat/fakemink-easter-pink-type-beat-go-away-23848312"
   },
   "beats": [
     {
       "n": "▶",
+      "title": "fakemink + easter pink type beat - \"go away\"",
+      "time": "01:41",
+      "plays": 951,
+      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy10cmFjayIsImtleSI6InByb2QvdHJhY2svYXJ0d29yay9USzIzODQ4MzEyL2YyZGU2YzE2MmRlYjg1MjJlMGI5YjExNGU2Y2ExNTU1LTEtMS0uanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1758391284550",
+      "license": {
+        "label": "Lease from $29.99",
+        "price": "$29.99"
+      },
+      "buyUrl": "https://www.beatstars.com/beat/fakemink-easter-pink-type-beat-go-away-23848312",
+      "stream": "https://main.v2.beatstars.com/stream?id=23848312&return=audio",
+      "playing": true
+    },
+    {
+      "n": "02",
       "title": "fakemink + puresnow + 2016 type beat - \"gold glitter\"",
       "time": "03:02",
       "plays": 951,
@@ -32,20 +46,6 @@
       },
       "buyUrl": "https://www.beatstars.com/beat/fakemink-puresnow-2016-type-beat-gold-glitter-24727214",
       "stream": "https://main.v2.beatstars.com/stream?id=24727214&return=audio",
-      "playing": true
-    },
-    {
-      "n": "02",
-      "title": "fakemink + easter pink type beat - \"go away\"",
-      "time": "01:41",
-      "plays": 947,
-      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy10cmFjayIsImtleSI6InByb2QvdHJhY2svYXJ0d29yay9USzIzODQ4MzEyL2YyZGU2YzE2MmRlYjg1MjJlMGI5YjExNGU2Y2ExNTU1LTEtMS0uanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1758391284550",
-      "license": {
-        "label": "Lease from $29.99",
-        "price": "$29.99"
-      },
-      "buyUrl": "https://www.beatstars.com/beat/fakemink-easter-pink-type-beat-go-away-23848312",
-      "stream": "https://main.v2.beatstars.com/stream?id=23848312&return=audio",
       "playing": false
     },
     {
@@ -150,7 +150,7 @@
       "n": "10",
       "title": "fakemink + nettspend type beat - \"look at us\"",
       "time": "01:29",
-      "plays": 429,
+      "plays": 432,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NjQ1MDk4OTA1NjR0UkkvMzEyMTRjYjYxMGZmMjk3NGMzZGI4NzJkNzVjOWUxYzcuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1764509897126",
       "license": {
         "label": "Lease from $29.99",
