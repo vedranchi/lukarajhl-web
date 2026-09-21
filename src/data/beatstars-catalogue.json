@@ -1,5 +1,5 @@
 {
-  "_generatedAt": "2026-09-21T11:16:06.393Z",
+  "_generatedAt": "2026-09-21T21:18:23.136Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
@@ -24,7 +24,7 @@
       "n": "▶",
       "title": "fakemink + easter pink type beat - \"go away\"",
       "time": "01:41",
-      "plays": 980,
+      "plays": 981,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy10cmFjayIsImtleSI6InByb2QvdHJhY2svYXJ0d29yay9USzIzODQ4MzEyL2YyZGU2YzE2MmRlYjg1MjJlMGI5YjExNGU2Y2ExNTU1LTEtMS0uanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1758391284550",
       "license": {
         "label": "Lease from $29.99",
@@ -38,7 +38,7 @@
       "n": "02",
       "title": "fakemink + puresnow + 2016 type beat - \"gold glitter\"",
       "time": "03:02",
-      "plays": 970,
+      "plays": 972,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njg5NDUyMTI2ODNsZmQvZmZnNGc1Z2pwZy5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1768945217000",
       "license": {
         "label": "Lease from $29.99",
@@ -136,7 +136,7 @@
       "n": "09",
       "title": "fakemink + nettspend type beat - \"look at us\"",
       "time": "01:29",
-      "plays": 491,
+      "plays": 493,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NjQ1MDk4OTA1NjR0UkkvMzEyMTRjYjYxMGZmMjk3NGMzZGI4NzJkNzVjOWUxYzcuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1764509897126",
       "license": {
         "label": "Lease from $29.99",
@@ -163,18 +163,18 @@
   ],
   "kits": [
     {
-      "file": "LUKARAJHL STASH KIT",
-      "meta": "A stash kit that i use daily to create electronic /…",
-      "price": "$20",
-      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1zb3VuZGtpdCIsImtleSI6InByb2Qvc291bmRraXQvYXJ0d29yay9TSzI2MTA2Ni8zMTIxNGNiNjEwZmYyOTc0YzNkYjg3MmQ3NWM5ZTFjNy0xLS5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1765299987490",
-      "buyUrl": "https://www.beatstars.com/rajhl/sound-kits/lukarajhl-stash-kit-261066"
-    },
-    {
       "file": "SEPIA SOUND KIT",
       "meta": "The sounds behind my uk underground beats. used to create…",
       "price": "$25",
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1zb3VuZGtpdCIsImtleSI6InByb2Qvc291bmRraXQvYXJ0d29yay9TSzI3MzQwMy9jb3Zlci0xLS5wbmciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1781460045035",
       "buyUrl": "https://www.beatstars.com/rajhl/sound-kits/sepia-sound-kit-273403"
+    },
+    {
+      "file": "LUKARAJHL STASH KIT",
+      "meta": "A stash kit that i use daily to create electronic /…",
+      "price": "$20",
+      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1zb3VuZGtpdCIsImtleSI6InByb2Qvc291bmRraXQvYXJ0d29yay9TSzI2MTA2Ni8zMTIxNGNiNjEwZmYyOTc0YzNkYjg3MmQ3NWM5ZTFjNy0xLS5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1765299987490",
+      "buyUrl": "https://www.beatstars.com/rajhl/sound-kits/lukarajhl-stash-kit-261066"
     },
     {
       "file": "BUNDLE KIT (#LSK SOUND KIT + LUKARAJHL STASH KIT)",
