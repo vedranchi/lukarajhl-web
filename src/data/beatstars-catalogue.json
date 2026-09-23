@@ -1,10 +1,10 @@
 {
-  "_generatedAt": "2026-09-22T10:27:36.437Z",
+  "_generatedAt": "2026-09-23T10:22:51.571Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
   "totals": {
-    "beats": 261,
+    "beats": 262,
     "kits": 5
   },
   "shown": {
@@ -24,7 +24,7 @@
       "n": "▶",
       "title": "fakemink + easter pink type beat - \"go away\"",
       "time": "01:41",
-      "plays": 983,
+      "plays": 986,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy10cmFjayIsImtleSI6InByb2QvdHJhY2svYXJ0d29yay9USzIzODQ4MzEyL2YyZGU2YzE2MmRlYjg1MjJlMGI5YjExNGU2Y2ExNTU1LTEtMS0uanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1758391284550",
       "license": {
         "label": "Lease from $29.99",
@@ -38,7 +38,7 @@
       "n": "02",
       "title": "fakemink + puresnow + 2016 type beat - \"gold glitter\"",
       "time": "03:02",
-      "plays": 972,
+      "plays": 973,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njg5NDUyMTI2ODNsZmQvZmZnNGc1Z2pwZy5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1768945217000",
       "license": {
         "label": "Lease from $29.99",
@@ -52,7 +52,7 @@
       "n": "03",
       "title": "fakemink + feng type beat - \"on the line\"",
       "time": "01:24",
-      "plays": 796,
+      "plays": 797,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NjE3NzkzOTE4ODUxNEgvMzVhYmNlODRkYzcwNmEzZDI2ZTExMWM3NzM5NzNlNzAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1761779398685",
       "license": {
         "label": "Lease from $29.99",
@@ -66,7 +66,7 @@
       "n": "04",
       "title": "fakemink + suzy sheer + snow strippers type beat \"leave now\"",
       "time": "02:21",
-      "plays": 657,
+      "plays": 658,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NjI1NTY4MjY4NDVJeDUvZDJhMmY0Y2NlNmNhZTdiNTBmYmU0ZjgyMjA2ZDJiZWQuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1762556832353",
       "license": {
         "label": "Lease from $29.99",
@@ -94,7 +94,7 @@
       "n": "06",
       "title": "esdeekid + fimiguerrero type beat - \"prague\"",
       "time": "02:05",
-      "plays": 564,
+      "plays": 565,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy10cmFjayIsImtleSI6InByb2QvdHJhY2svYXJ0d29yay9USzIzNTY3Mzk4L2FsbC1vdmVyLXRoZS1uZXQtaS1tLWEtYnVyZGVuLTEtLmpwZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJmaXQiOiJmaWxsIiwid2lkdGgiOjQwMCwiaGVpZ2h0Ijo0MDB9LCJ0b0Zvcm1hdCI6IndlYnAifX0=?t=1755719926927",
       "license": {
         "label": "Lease from $29.99",
@@ -122,7 +122,7 @@
       "n": "08",
       "title": "fakemink + puresnow type beat - \"on me\"",
       "time": "02:44",
-      "plays": 510,
+      "plays": 511,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NzA3MjM2NzI2NDBheXQvdW50aXRsZWQtZGVzaWduLTQwLS5wbmciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1770723678168",
       "license": {
         "label": "Lease from $29.99",
@@ -136,7 +136,7 @@
       "n": "09",
       "title": "fakemink + nettspend type beat - \"look at us\"",
       "time": "01:29",
-      "plays": 497,
+      "plays": 506,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NjQ1MDk4OTA1NjR0UkkvMzEyMTRjYjYxMGZmMjk3NGMzZGI4NzJkNzVjOWUxYzcuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1764509897126",
       "license": {
         "label": "Lease from $29.99",
