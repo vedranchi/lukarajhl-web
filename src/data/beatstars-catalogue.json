@@ -1,10 +1,10 @@
 {
-  "_generatedAt": "2026-09-24T10:38:50.614Z",
+  "_generatedAt": "2026-09-24T20:51:48.741Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
   "totals": {
-    "beats": 262,
+    "beats": 263,
     "kits": 5
   },
   "shown": {
@@ -38,7 +38,7 @@
       "n": "02",
       "title": "fakemink + puresnow + 2016 type beat - \"gold glitter\"",
       "time": "03:02",
-      "plays": 977,
+      "plays": 978,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njg5NDUyMTI2ODNsZmQvZmZnNGc1Z2pwZy5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1768945217000",
       "license": {
         "label": "Lease from $29.99",
@@ -80,7 +80,7 @@
       "n": "05",
       "title": "fakemink + feng type beat - \"why did you leave?\"",
       "time": "01:33",
-      "plays": 568,
+      "plays": 569,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njk1MjA3NzIwODhabVUvNGNmMWI3OTU0OGIyMWViYjhmNTEyNGNhMDE5ZWVkNzYuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1769520777843",
       "license": {
         "label": "Lease from $29.99",
@@ -108,7 +108,7 @@
       "n": "07",
       "title": "fakemink + suzy sheer type beat - \"manifest\"",
       "time": "01:33",
-      "plays": 537,
+      "plays": 538,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NjY4NDEyMDM5OTdLdk0vZXpnaWYtZnJhbWUtMDAxLTUtLmpwZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJmaXQiOiJmaWxsIiwid2lkdGgiOjQwMCwiaGVpZ2h0Ijo0MDB9LCJ0b0Zvcm1hdCI6IndlYnAifX0=?t=1766841217281",
       "license": {
         "label": "Lease from $29.99",
@@ -120,6 +120,20 @@
     },
     {
       "n": "08",
+      "title": "fakemink + puresnow type beat - \"on me\"",
+      "time": "02:44",
+      "plays": 515,
+      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NzA3MjM2NzI2NDBheXQvdW50aXRsZWQtZGVzaWduLTQwLS5wbmciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1770723678168",
+      "license": {
+        "label": "Lease from $29.99",
+        "price": "$29.99"
+      },
+      "buyUrl": "https://www.beatstars.com/beat/fakemink-puresnow-type-beat-on-me-24872873",
+      "stream": "https://main.v2.beatstars.com/stream?id=24872873&return=audio",
+      "playing": false
+    },
+    {
+      "n": "09",
       "title": "fakemink + nettspend type beat - \"look at us\"",
       "time": "01:29",
       "plays": 514,
@@ -130,20 +144,6 @@
       },
       "buyUrl": "https://www.beatstars.com/beat/fakemink-nettspend-type-beat-look-at-us-24371128",
       "stream": "https://main.v2.beatstars.com/stream?id=24371128&return=audio",
-      "playing": false
-    },
-    {
-      "n": "09",
-      "title": "fakemink + puresnow type beat - \"on me\"",
-      "time": "02:44",
-      "plays": 514,
-      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NzA3MjM2NzI2NDBheXQvdW50aXRsZWQtZGVzaWduLTQwLS5wbmciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1770723678168",
-      "license": {
-        "label": "Lease from $29.99",
-        "price": "$29.99"
-      },
-      "buyUrl": "https://www.beatstars.com/beat/fakemink-puresnow-type-beat-on-me-24872873",
-      "stream": "https://main.v2.beatstars.com/stream?id=24872873&return=audio",
       "playing": false
     },
     {
