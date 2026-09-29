@@ -1,5 +1,5 @@
 {
-  "_generatedAt": "2026-09-28T22:41:50.733Z",
+  "_generatedAt": "2026-09-29T11:42:18.853Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
@@ -24,7 +24,7 @@
       "n": "▶",
       "title": "fakemink + easter pink type beat - \"go away\"",
       "time": "01:41",
-      "plays": 1010,
+      "plays": 1011,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy10cmFjayIsImtleSI6InByb2QvdHJhY2svYXJ0d29yay9USzIzODQ4MzEyL2YyZGU2YzE2MmRlYjg1MjJlMGI5YjExNGU2Y2ExNTU1LTEtMS0uanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1758391284550",
       "license": {
         "label": "Lease from $29.99",
@@ -80,7 +80,7 @@
       "n": "05",
       "title": "fakemink + feng type beat - \"why did you leave?\"",
       "time": "01:33",
-      "plays": 573,
+      "plays": 575,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njk1MjA3NzIwODhabVUvNGNmMWI3OTU0OGIyMWViYjhmNTEyNGNhMDE5ZWVkNzYuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1769520777843",
       "license": {
         "label": "Lease from $29.99",
