@@ -1,10 +1,10 @@
 {
-  "_generatedAt": "2026-09-29T21:35:27.425Z",
+  "_generatedAt": "2026-09-30T11:28:48.424Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
   "totals": {
-    "beats": 267,
+    "beats": 268,
     "kits": 5
   },
   "shown": {
@@ -24,7 +24,7 @@
       "n": "▶",
       "title": "fakemink + easter pink type beat - \"go away\"",
       "time": "01:41",
-      "plays": 1011,
+      "plays": 1012,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy10cmFjayIsImtleSI6InByb2QvdHJhY2svYXJ0d29yay9USzIzODQ4MzEyL2YyZGU2YzE2MmRlYjg1MjJlMGI5YjExNGU2Y2ExNTU1LTEtMS0uanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1758391284550",
       "license": {
         "label": "Lease from $29.99",
@@ -38,7 +38,7 @@
       "n": "02",
       "title": "fakemink + puresnow + 2016 type beat - \"gold glitter\"",
       "time": "03:02",
-      "plays": 991,
+      "plays": 993,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njg5NDUyMTI2ODNsZmQvZmZnNGc1Z2pwZy5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1768945217000",
       "license": {
         "label": "Lease from $29.99",
@@ -52,7 +52,7 @@
       "n": "03",
       "title": "fakemink + feng type beat - \"on the line\"",
       "time": "01:24",
-      "plays": 800,
+      "plays": 801,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NjE3NzkzOTE4ODUxNEgvMzVhYmNlODRkYzcwNmEzZDI2ZTExMWM3NzM5NzNlNzAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1761779398685",
       "license": {
         "label": "Lease from $29.99",
@@ -66,7 +66,7 @@
       "n": "04",
       "title": "fakemink + suzy sheer + snow strippers type beat \"leave now\"",
       "time": "02:21",
-      "plays": 665,
+      "plays": 670,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NjI1NTY4MjY4NDVJeDUvZDJhMmY0Y2NlNmNhZTdiNTBmYmU0ZjgyMjA2ZDJiZWQuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6NDAwLCJoZWlnaHQiOjQwMH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1762556832353",
       "license": {
         "label": "Lease from $29.99",
@@ -150,7 +150,7 @@
       "n": "10",
       "title": "fakemink + feng type beat - \"white noise\"",
       "time": "01:50",
-      "plays": 481,
+      "plays": 483,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NzE3MjY3ODc4MjVMZ1YvdW50aXRsZWQtZGVzaWduLTQ5LS5wbmciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1771726795027",
       "license": {
         "label": "Lease from $29.99",
