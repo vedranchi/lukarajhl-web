@@ -1,5 +1,5 @@
 {
-  "_generatedAt": "2026-10-08T22:34:10.923Z",
+  "_generatedAt": "2026-10-09T12:11:48.579Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
@@ -38,7 +38,7 @@
       "n": "02",
       "title": "fakemink + puresnow + 2016 type beat - \"gold glitter\"",
       "time": "03:02",
-      "plays": 1014,
+      "plays": 1015,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njg5NDUyMTI2ODNsZmQvZmZnNGc1Z2pwZy5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1768945217000",
       "license": {
         "label": "Lease from $29.99",
@@ -120,6 +120,20 @@
     },
     {
       "n": "08",
+      "title": "fakemink + puresnow type beat - \"on me\"",
+      "time": "02:44",
+      "plays": 528,
+      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NzA3MjM2NzI2NDBheXQvdW50aXRsZWQtZGVzaWduLTQwLS5wbmciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1770723678168",
+      "license": {
+        "label": "Lease from $29.99",
+        "price": "$29.99"
+      },
+      "buyUrl": "https://www.beatstars.com/beat/fakemink-puresnow-type-beat-on-me-24872873",
+      "stream": "https://main.v2.beatstars.com/stream?id=24872873&return=audio",
+      "playing": false
+    },
+    {
+      "n": "09",
       "title": "fakemink + nettspend type beat - \"look at us\"",
       "time": "01:29",
       "plays": 528,
@@ -130,20 +144,6 @@
       },
       "buyUrl": "https://www.beatstars.com/beat/fakemink-nettspend-type-beat-look-at-us-24371128",
       "stream": "https://main.v2.beatstars.com/stream?id=24371128&return=audio",
-      "playing": false
-    },
-    {
-      "n": "09",
-      "title": "fakemink + puresnow type beat - \"on me\"",
-      "time": "02:44",
-      "plays": 526,
-      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NzA3MjM2NzI2NDBheXQvdW50aXRsZWQtZGVzaWduLTQwLS5wbmciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1770723678168",
-      "license": {
-        "label": "Lease from $29.99",
-        "price": "$29.99"
-      },
-      "buyUrl": "https://www.beatstars.com/beat/fakemink-puresnow-type-beat-on-me-24872873",
-      "stream": "https://main.v2.beatstars.com/stream?id=24872873&return=audio",
       "playing": false
     },
     {
