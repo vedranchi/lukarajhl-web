@@ -1,5 +1,5 @@
 {
-  "_generatedAt": "2026-10-28T11:44:44.866Z",
+  "_generatedAt": "2026-10-28T21:57:15.645Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
@@ -38,7 +38,7 @@
       "n": "02",
       "title": "fakemink + puresnow + 2016 type beat - \"gold glitter\"",
       "time": "03:02",
-      "plays": 1056,
+      "plays": 1062,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3Njg5NDUyMTI2ODNsZmQvZmZnNGc1Z2pwZy5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1768945217000",
       "license": {
         "label": "Lease from $29.99",
@@ -108,7 +108,7 @@
       "n": "07",
       "title": "fakemink + puresnow type beat - \"on me\"",
       "time": "02:44",
-      "plays": 554,
+      "plays": 560,
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1hc3NldCIsImtleSI6InByb2QvYXNzZXQvTVIxOTQ3NDk3L0FUSU1SMTk0NzQ5NzE3NzA3MjM2NzI2NDBheXQvdW50aXRsZWQtZGVzaWduLTQwLS5wbmciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1770723678168",
       "license": {
         "label": "Lease from $29.99",
@@ -177,18 +177,18 @@
       "buyUrl": "https://www.beatstars.com/rajhl/sound-kits/bundle-kit-lsk-sound-kit--lukarajhl-stash-kit-268177"
     },
     {
-      "file": "#LSK SOUND KIT",
-      "meta": "A sound kit that i use daily to create nostalgic 2016…",
-      "price": "$20",
-      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1zb3VuZGtpdCIsImtleSI6InByb2Qvc291bmRraXQvYXJ0d29yay9TSzI2Njk5MC81MDB4NTAwLnBuZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJmaXQiOiJmaWxsIiwid2lkdGgiOjQwMCwiaGVpZ2h0Ijo0MDB9LCJ0b0Zvcm1hdCI6IndlYnAifX0=?t=1772308453569",
-      "buyUrl": "https://www.beatstars.com/rajhl/sound-kits/lsk-sound-kit-266990"
-    },
-    {
       "file": "LUKARAJHL STASH KIT",
       "meta": "A stash kit that i use daily to create electronic /…",
       "price": "$20",
       "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1zb3VuZGtpdCIsImtleSI6InByb2Qvc291bmRraXQvYXJ0d29yay9TSzI2MTA2Ni8zMTIxNGNiNjEwZmYyOTc0YzNkYjg3MmQ3NWM5ZTFjNy0xLS5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsiZml0IjoiZmlsbCIsIndpZHRoIjo0MDAsImhlaWdodCI6NDAwfSwidG9Gb3JtYXQiOiJ3ZWJwIn19?t=1765299987490",
       "buyUrl": "https://www.beatstars.com/rajhl/sound-kits/lukarajhl-stash-kit-261066"
+    },
+    {
+      "file": "#LSK SOUND KIT",
+      "meta": "A sound kit that i use daily to create nostalgic 2016…",
+      "price": "$20",
+      "image": "https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1zb3VuZGtpdCIsImtleSI6InByb2Qvc291bmRraXQvYXJ0d29yay9TSzI2Njk5MC81MDB4NTAwLnBuZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJmaXQiOiJmaWxsIiwid2lkdGgiOjQwMCwiaGVpZ2h0Ijo0MDB9LCJ0b0Zvcm1hdCI6IndlYnAifX0=?t=1772308453569",
+      "buyUrl": "https://www.beatstars.com/rajhl/sound-kits/lsk-sound-kit-266990"
     },
     {
       "file": "EXIMIA VOCAL KIT",
