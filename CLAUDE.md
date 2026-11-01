@@ -88,9 +88,10 @@ Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `app/` · `app/action
   protected the job must **not** `git push` to it (that fails `GH006`); it force-pushes one
   commit to a disposable carrier branch, opens a PR, and squash-merges it with
   `GITHUB_TOKEN` (needs `contents: write` **+** `pull-requests: write`). The force-push is
-  deliberate and safe — the carrier branch only ever holds that one commit. If a future
-  protection change blocks the merge too, add a repo-admin bypass allowance rather than
-  restoring a direct push.
+  deliberate and safe — the carrier branch only ever holds that one commit. `GITHUB_TOKEN`
+  events start no workflows, so the job runs CI's checks itself before merging — keep them.
+  If a future protection change blocks the merge too, add a repo-admin bypass allowance
+  rather than restoring a direct push.
 - **G8** Symptom → first check: the live "Browse all N beats" number looks stale →
   `gh run list` before anything else. Nothing else surfaces a failed refresh.
 
@@ -174,31 +175,20 @@ never hardcode hex in components.
 - **DS6** Fonts: system monospace today. Any retro face goes through `next/font` — never a
   CDN `<link>`.
 
-## 10a. Security invariants
-- **SEC1** `next.config.ts` owns the response headers for every route (HSTS, `X-Frame-Options`,
-  nosniff, `Referrer-Policy`, `Permissions-Policy`, CSP). The CSP is deliberately limited to
-  `frame-ancestors` / `base-uri` / `object-src` / `form-action`. **Do not add `media-src` or
-  `img-src`**: the beat stream 302s to an unpredictable signed S3 host (P2) and CSP re-checks
-  every redirect hop, so an allowlist kills playback. `script-src` would need nonces →
-  middleware → loses the homepage's static prerender; revisit only if the page ever renders
-  untrusted content. HSTS is `max-age=63072000` — the value Vercel sends by default; ours
-  replaces it, so never set it lower. No `includeSubDomains`, no `preload` — both are the
-  client's call on a client-owned domain (D6).
-- **SEC3** The upload-claim HMAC key (`INVITE_CLAIM_SECRET`, falling back to the legacy
-  `PAYLOAD_SECRET` the deployment already has) fails closed: under 16 characters, uploads report
-  "unavailable" rather than signing forgeable claims.
-- **SEC4** `.github/workflows/purge-invite-tracks.yml` enforces the agreed retention window on
-  applicant audio. It *skips*, not fails, while `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`
-  are unset as repo secrets — confirm it is deleting, not skipping.
-- **SEC6** The app's tables live in Supabase's `public` schema, which the Data API exposes, and
-  Supabase grants `anon`/`authenticated` on every new table there by default. With RLS off,
-  the publishable key reads `users` (hashes) and `invite_requests` and can INSERT an admin.
-  `scripts/sql/lock-down-data-api.sql` (idempotent) enables RLS and revokes those grants;
-  the app connects as `postgres` (BYPASSRLS) and is unaffected. Re-run it after creating any
-  table. Nothing uses the Data API, so disabling it in the dashboard is stronger still (D6).
-- **SEC5** `pnpm-workspace.yaml` `overrides` pin patch-level fixes for audit-flagged transitive
-  deps no direct bump reaches. Re-check with `pnpm audit --prod`; drop one once upstream
-  satisfies it alone.
+## 10a. Security invariants — the reasoning lives in the files named
+- **SEC1** `next.config.ts` owns every response header. The CSP stays limited to navigation and
+  embedding — **never add `media-src`/`img-src`** (the beat stream's signed-S3 redirect, P2).
+  HSTS never below `max-age=63072000`; `includeSubDomains`/`preload` are the client's call (D6).
+- **SEC3** The upload-claim HMAC key fails closed under 16 characters (`claimSecret()`,
+  `src/lib/track-uploads.ts`): `INVITE_CLAIM_SECRET`, falling back to the legacy `PAYLOAD_SECRET`
+  the deployment already has.
+- **SEC4** `purge-invite-tracks.yml` enforces applicant-audio retention, and fails red while
+  `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` are unset as repo secrets.
+- **SEC5** `pnpm-workspace.yaml` `overrides` pin audit fixes no direct bump reaches. Re-check
+  with `pnpm audit --prod`; drop one once upstream satisfies it alone.
+- **SEC6** `scripts/sql/lock-down-data-api.sql` (idempotent) closes the Supabase Data API to the
+  app's tables. Re-run it after creating any table. Disabling the Data API in the dashboard is
+  stronger still (D6).
 
 ## 11. Testing
 - **T1** Tests are colocated `*.test.ts` in `src/lib/`.

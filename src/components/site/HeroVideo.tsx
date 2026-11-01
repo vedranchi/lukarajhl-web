@@ -13,11 +13,12 @@ export function HeroVideo({ video }: { video: LatestVideo }) {
       <span className="hero-vid-art">
         {/* Plain <img>, not next/image: same reason as the kit artwork — the
             optimizer would refetch a third-party asset server-side. */}
+        {/* alt="": the link's own text already names it, so a descriptive alt is read twice. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="hero-kit-art hero-vid-thumb"
           src={video.thumbnail}
-          alt={`${video.title} video thumbnail`}
+          alt=""
           width={480}
           height={360}
           decoding="async"

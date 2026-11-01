@@ -52,11 +52,12 @@ export async function Hero() {
             {featuredKit.image ? (
               // Plain <img>, not next/image: the optimizer would refetch the asset
               // from BeatStars server-side. See KitsSection for the same note (P2).
+              // alt="": the link's own text already names it, so a descriptive alt is read twice.
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 className="hero-kit-art"
                 src={featuredKit.image}
-                alt={`${featuredKit.file} cover art`}
+                alt=""
                 width={400}
                 height={400}
                 decoding="async"

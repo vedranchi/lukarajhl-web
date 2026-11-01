@@ -30,7 +30,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description: siteDescription,
-  alternates: { canonical: "/" },
+  // No `alternates.canonical` here: the root layout also wraps the 404 page and
+  // any future route, and a canonical set here would mark each of them as a
+  // duplicate of the homepage. It lives in page.tsx instead.
   openGraph: {
     type: "website",
     url: "/",

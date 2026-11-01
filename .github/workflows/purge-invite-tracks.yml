@@ -18,6 +18,11 @@ name: Purge applicant beats past retention
 #
 # Unlike refresh-catalogue.yml this job writes nothing to the repo — it needs no
 # `contents: write`, and the default read-only token is enough.
+#
+# It FAILS while SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are unset (SEC4). It
+# used to skip with a warning, but a green scheduled run is one nobody opens,
+# so retention went unenforced in silence. Red until the secrets exist is the
+# point: a retention guarantee that can lapse unnoticed isn't one.
 
 on:
   schedule:
@@ -53,13 +58,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           RETENTION_DAYS: ${{ vars.RETENTION_DAYS }} # optional; the script defaults to 90
         run: |
-          # Skip cleanly rather than failing red while the two secrets are still
-          # unset — a red run every Sunday trains everyone to ignore this job,
-          # which is the opposite of what a retention guarantee needs.
           if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
-            echo "::warning::SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set as repository secrets."
-            echo "::warning::Applicant audio is NOT being purged. Add both secrets to enable retention."
-            exit 0
+            echo "::error::SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set as repository secrets."
+            echo "::error::Applicant audio is NOT being purged. Add both secrets to enforce retention."
+            exit 1
           fi
 
           # The script logs object paths only (requests/<month>/<uuid>/N.mp3) —

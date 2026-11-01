@@ -11,6 +11,7 @@
      toward white; ink steps down toward near-black violet. */
   --bg: #CBC6DA;
   --bg-2: #D6D2E3;
+  --bg-3: #BDB6D1; /* deepest page-ramp stop; the share card's gradient tail */
   --surface: #E7E4F0;
   --surface-2: #F2F0F8;
   --ink: #17151E;
@@ -29,6 +30,11 @@
   --amber: #8A6520;
   --magenta: #7E4E8C;
   --led: #2E8B57;
+  /* Light ink on violet / near-black (title bars, overlays). */
+  --on-accent: #F1EFF7;
+  /* Amber LED readout on a dark plate (the share card). --amber is the
+     darker one for light plates (DS2). */
+  --amber-lit: #F2B84B;
 
   /* A hairline has to work against a deeper surface now, so both step up. */
   --hair: rgba(24, 19, 46, 0.16);
@@ -797,7 +803,12 @@ a { color: inherit; text-decoration: none; }
   margin: 0; font-size: 11.5px; font-weight: 700; color: #16151B; line-height: 1.28;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-.pod-artist { margin: 3px 0 0; font-size: 10.5px; color: #4B4954; line-height: 1.3; }
+/* One line, always: the tags vary in length, and a wrapping line would move the
+   click wheel under the user's thumb from track to track. */
+.pod-artist {
+  margin: 3px 0 0; font-size: 10.5px; color: #4B4954; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .pod-album { margin: 1px 0 0; font-size: 10.5px; color: #6E6B7A; line-height: 1.3; }
 
 .pod-scrub { display: flex; align-items: center; gap: 7px; padding: 6px 8px 9px; }
@@ -926,7 +937,7 @@ a { color: inherit; text-decoration: none; }
   /* Full-bleed without 100vw (which would count the scrollbar and overflow). */
   margin-inline: calc(50% - 50vw);
   padding-inline: calc(50vw - 50%);
-  color: #F1EFF7;
+  color: var(--on-accent);
   /* Edges fade to transparent rather than to a chosen light value: the page
      plate behind this is `fixed`, so its colour at this scroll position cannot
      be matched statically. Fading out lets the real background show through and
@@ -983,7 +994,7 @@ a { color: inherit; text-decoration: none; }
 }
 .circle-form .field label { color: #9E97BA; }
 .circle-form .field input {
-  background: rgba(0, 0, 0, 0.32); color: #F1EFF7;
+  background: rgba(0, 0, 0, 0.32); color: var(--on-accent);
   border-color: rgba(255, 255, 255, 0.16);
 }
 .circle-form .field input::placeholder { color: #7E779A; }

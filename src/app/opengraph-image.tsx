@@ -2,16 +2,17 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { leasesFrom, siteTagline } from "@/data/content";
+import { rootTokens, tokenReader } from "@/lib/css-tokens";
 
 /**
  * The link-preview card (Instagram DMs, WhatsApp, iMessage, X). Rendered once at
  * build time — it reads no request data — and served as a static PNG.
  *
- * Colours are literal hex because Satori cannot read the CSS custom properties
- * in globals.css. They are copies of those tokens (--bg, --surface-2, --ink,
- * --muted, --accent, --accent-deep, --magenta); change them there first, then
- * here. The amber is the LED-readout use DS2 allows, brightened for a dark
- * display rather than the page's light plates.
+ * Satori can't resolve CSS custom properties, so the colours are read out of
+ * globals.css's :root at build time (CLAUDE.md §10) — change them there. A
+ * missing token fails the build. The amber is --amber-lit, the LED-readout use
+ * DS2 allows on a dark plate. The rgba glow and shadow below are effect tints,
+ * written inline the same way globals.css's own rules write them.
  *
  * Everything sits on the centre line because WhatsApp and some DM clients crop
  * the card to a square thumbnail; the name survives that crop.
@@ -24,25 +25,29 @@ export const alt = `Luka Rajhl. ${siteTagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const C = {
-  bg: "#CBC6DA",
-  bg2: "#D6D2E3",
-  surface: "#E7E4F0",
-  surface2: "#F2F0F8",
-  ink: "#17151E",
-  muted: "#453F58",
-  accent: "#5F5397",
-  accentDeep: "#3A3163",
-  magenta: "#7E4E8C",
-  led: "#F2B84B",
-  hair: "rgba(24, 19, 46, 0.26)",
-};
-
 export default async function OpengraphImage() {
-  const [display, mono] = await Promise.all([
+  const [display, mono, css] = await Promise.all([
     readFile(join(process.cwd(), "assets/fonts/VT323-Regular.ttf")),
     readFile(join(process.cwd(), "assets/fonts/IBMPlexMono-SemiBold.ttf")),
+    readFile(join(process.cwd(), "src/app/globals.css"), "utf8"),
   ]);
+
+  const t = tokenReader(rootTokens(css));
+  const C = {
+    bg: t("bg"),
+    bg2: t("bg-2"),
+    bg3: t("bg-3"),
+    surface: t("surface"),
+    surface2: t("surface-2"),
+    ink: t("ink"),
+    muted: t("muted"),
+    accent: t("accent"),
+    accentDeep: t("accent-deep"),
+    magenta: t("magenta"),
+    led: t("amber-lit"),
+    onAccent: t("on-accent"),
+    hair: t("hair-2"),
+  };
 
   return new ImageResponse(
     (
@@ -53,7 +58,7 @@ export default async function OpengraphImage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: `radial-gradient(70% 60% at 78% 8%, rgba(139, 124, 200, 0.45), transparent 70%), linear-gradient(160deg, ${C.bg2}, ${C.bg} 60%, #BDB6D1)`,
+          background: `radial-gradient(70% 60% at 78% 8%, rgba(139, 124, 200, 0.45), transparent 70%), linear-gradient(160deg, ${C.bg2}, ${C.bg} 60%, ${C.bg3})`,
           fontFamily: "Plex Mono",
         }}
       >
@@ -78,7 +83,7 @@ export default async function OpengraphImage() {
               justifyContent: "space-between",
               padding: "0 26px",
               background: `linear-gradient(90deg, ${C.accentDeep}, ${C.accent} 62%, ${C.magenta})`,
-              color: "#F1EFF7",
+              color: C.onAccent,
               fontSize: 22,
               letterSpacing: 4,
             }}

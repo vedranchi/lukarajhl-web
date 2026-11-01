@@ -64,10 +64,11 @@ export async function ChannelsSection() {
                               {/* Plain <img>, not next/image: the optimizer would
                                   refetch a third-party asset server-side. Same
                                   call as the kit artwork and the hero video. */}
+                              {/* alt="": the link's own text already names it, so a descriptive alt is read twice. */}
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
                                 src={video.thumbnail}
-                                alt={`${video.title} video thumbnail`}
+                                alt=""
                                 width={480}
                                 height={360}
                                 loading="lazy"

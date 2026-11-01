@@ -116,13 +116,24 @@ function blurb(html, max = 58) {
  * upstream value that is not an https URL on a BeatStars host is refused, not
  * written: a changed or poisoned API response must fail the run red rather than
  * ship a link to somewhere else. Unlike the shrink gate this has no override.
+ *
+ * The host check alone isn't enough: the URL builders fall back to templates
+ * like `/beat/${d.title_uri}`, so a field the API stopped sending yields
+ * `https://www.beatstars.com/beat/undefined` — right host, dead link. Any empty,
+ * "undefined", "null" or "NaN" path segment or query value is refused too.
  */
+const HOLLOW = new Set(["", "undefined", "null", "NaN"]);
 function assertBeatStarsUrls({ beats, kits }) {
   const ok = (value) => {
     if (value === null) return true; // artwork is optional
     try {
       const url = new URL(value);
-      return url.protocol === "https:" && (url.hostname === "beatstars.com" || url.hostname.endsWith(".beatstars.com"));
+      const onBeatStars =
+        url.protocol === "https:" && (url.hostname === "beatstars.com" || url.hostname.endsWith(".beatstars.com"));
+      const hollow =
+        url.pathname.split("/").slice(1).some((s) => HOLLOW.has(s)) ||
+        [...url.searchParams.values()].some((v) => HOLLOW.has(v));
+      return onBeatStars && !hollow;
     } catch {
       return false;
     }

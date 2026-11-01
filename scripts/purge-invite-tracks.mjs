@@ -41,15 +41,23 @@ if (!Number.isFinite(RETENTION_DAYS) || RETENTION_DAYS < 1) {
 const headers = { apikey: KEY, Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" };
 
 /** The list endpoint is per-prefix, not recursive: a folder comes back with a
-    null id, so walk into anything that has one. */
+    null id, so walk into anything that has one. It is also paged, so keep
+    asking until a short page — otherwise anything past the first PAGE entries
+    of a folder would never be listed and would outlive the retention window. */
+const PAGE = 1000;
 async function list(prefix) {
-  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/list/${BUCKET}`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ prefix, limit: 1000, sortBy: { column: "name", order: "asc" } }),
-  });
-  if (!res.ok) throw new Error(`list ${prefix} failed: ${res.status} ${await res.text()}`);
-  return res.json();
+  const all = [];
+  for (let offset = 0; ; offset += PAGE) {
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/list/${BUCKET}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ prefix, limit: PAGE, offset, sortBy: { column: "name", order: "asc" } }),
+    });
+    if (!res.ok) throw new Error(`list ${prefix} failed: ${res.status} ${await res.text()}`);
+    const page = await res.json();
+    all.push(...page);
+    if (page.length < PAGE) return all;
+  }
 }
 
 async function walk(prefix, out = []) {
