@@ -1,12 +1,10 @@
 import type { NextConfig } from "next";
-import { withPayload } from "@payloadcms/next/withPayload";
 
 /**
- * Response headers for every route, public page and `/admin` alike.
+ * Response headers for every route.
  *
  * Vercel adds only HSTS by default (`max-age=63072000`, on custom domains);
- * everything else here was missing, and nothing stopped the authenticated admin
- * panel from being framed.
+ * everything else here was missing, and nothing stopped the page from being framed.
  *
  * On the CSP being this narrow — it sets only the four directives that restrict
  * *navigation and embedding*, not resource loading. That is deliberate, not an
@@ -21,9 +19,8 @@ import { withPayload } from "@payloadcms/next/withPayload";
  *    request, which would opt the homepage out of the static prerender it is
  *    built around (README: statically rendered, revalidated hourly). The XSS
  *    surface it would buy back is close to nil: there is no
- *    `dangerouslySetInnerHTML` anywhere, and no user-generated content reaches
- *    the public page — applicant data is only ever rendered inside the
- *    authenticated admin.
+ *    `dangerouslySetInnerHTML` anywhere, and no user-generated content is ever
+ *    rendered — applications go to the database and the owner's inbox only.
  *
  * What is here costs nothing and closes real holes. Revisit `script-src` if the
  * page ever renders untrusted content.
@@ -36,8 +33,8 @@ const securityHeaders = [
   // domain (CLAUDE.md D6) and we don't control what its other subdomains serve
   // (email-tracking CNAMEs, for example). Both are their call.
   { key: "Strict-Transport-Security", value: "max-age=63072000" },
-  // Clickjacking. The real target is /admin — a framed admin session plus an
-  // overlay is how an authenticated action gets performed by someone else.
+  // Clickjacking: nothing here is meant to be embedded, and a framed invite form
+  // under someone else's overlay is how a submission gets faked.
   // X-Frame-Options for older agents, frame-ancestors for current ones.
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -65,16 +62,13 @@ const nextConfig: NextConfig = {
   // Don't advertise the framework version to scanners. Cosmetic next to the
   // headers above, but it is one line and there is no reason to publish it.
   poweredByHeader: false,
+  // node-postgres stays a plain runtime require instead of being bundled: it
+  // lazily requires the optional native `pg-native`, which bundlers try to
+  // resolve and fail on. Vercel's file tracing ships it with the function.
+  serverExternalPackages: ["pg"],
   async headers() {
-    return [
-      { source: "/:path*", headers: securityHeaders },
-      // Keeps the login page out of search results. robots.txt can't: a
-      // Disallow only stops crawling, and a disallowed URL with inbound links
-      // still gets indexed URL-only. Payload's admin sends no noindex of its
-      // own. `:path*` matches zero segments, so this covers /admin itself.
-      { source: "/admin/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
-    ];
+    return [{ source: "/:path*", headers: securityHeaders }];
   },
 };
 
-export default withPayload(nextConfig);
+export default nextConfig;

@@ -11,7 +11,7 @@ import { beatstarsStore } from "@/data/content";
 import type { Metadata } from "next";
 
 // Page-level, not in the root layout, so routes that don't set their own
-// canonical (the admin, any future page) don't inherit "/" as theirs.
+// canonical (the 404 page, any future page) don't inherit "/" as theirs.
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const YEAR = new Date().getFullYear(); // module scope: Date in render trips react-hooks/purity

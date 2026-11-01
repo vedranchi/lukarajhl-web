@@ -11,47 +11,45 @@
   3. **This file.**
   4. `docs/`, vault notes, commit messages, past handoffs.
 - Two rules conflict → the more specific one wins. Equally specific → ask.
-- Rule IDs (`G3`, `DB2`) are stable. Cite them in commits/PRs and when superseding a rule.
+- Rule IDs (`G3`, `DB4`) are stable. Cite them in commits/PRs and when superseding a rule.
 - **Maintenance:** write rules as invariants, present tense, no dates in the body. Retire a
   rule when its subject is gone. Long debugging narratives belong in §16, not here. Soft
   budget ~240 lines — over it means something belongs elsewhere.
 
 ## 1. DANGER — confirm with the user before each of these
-- **D1** `pnpm dev` runs Payload's schema push against the **live production database**
-  (local `.env` `DATABASE_URL` is the prod pooler; there is no dev DB). After a collection or
-  field change, the first `pnpm dev` **drops the removed tables/columns in production**.
-- **D2** Submitting the invite form — locally or deployed — writes a real row and sends a
-  real email to the client via Resend. There is no sandbox.
+- **D2** Local `.env` `DATABASE_URL` is the **production** database (there is no dev DB).
+  Submitting the invite form — locally or deployed — writes a real row there, stores real files
+  and sends a real email to the client via Resend. There is no sandbox.
 - **D3** `vercel env pull --environment=production` is a live secrets pull.
-- **D4** Deleting a collection or field requires a `totalDocs` check against live first.
-- **D5** Rotating `PAYLOAD_SECRET` invalidates existing admin sessions.
+- **D4** Dropping a table or column, or any other DDL, requires a row count against live first
+  and runs as hand-written SQL in a transaction — there is no ORM and no migrations dir.
 - **D6** Client-owned accounts (domain, hosting, analytics, socials): delegated access only.
   Never park the client's business on personal accounts.
 
 ## 2. What this is
 Website for **Luka Rajhl** (beat producer, Skopje) — the user's first client, built as the
-first instance of a reusable client-site template. Public marketing site now; analytics/AI
-admin dashboard is Phase 2. The reusable *process* lives in the Obsidian vault (§13).
+first instance of a reusable client-site template. One public page that updates itself (scheduled
+catalogue refresh, hourly YouTube revalidation) — **no CMS, and none planned**. Analytics/AI
+dashboard is Phase 2. The reusable *process* lives in the Obsidian vault (§13).
 
 ## 3. Stack — ground truth is `package.json`
 Next.js 16 App Router · React 19 · TypeScript · Tailwind v4 (CSS-first `@theme`, no
-`tailwind.config.js`) · Payload 3 embedded at `/admin` · Postgres via Supabase · Vercel ·
-pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `app/` ·
-`app/(payload)/` · `app/actions/` · `collections/` · `components/retro/` · `data/` · `lib/`.
+`tailwind.config.js`) · Postgres via Supabase, plain `pg` · Vercel · pnpm · ESLint (no
+Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `app/` · `app/actions/` ·
+`components/site/` · `data/` · `lib/`.
 
 - **S1** The public site renders from `src/data/content.ts` +
-  `src/data/beatstars-catalogue.json` and **never reads Payload**. The only Payload call
-  outside `app/(payload)/` is the invite server action, via the Local API (`src/lib/payload.ts`).
-- **S2** Generated — never hand-edit, regenerate: `src/payload-types.ts`
-  (`pnpm generate:types`) and `src/app/(payload)/admin/importMap.js` (`pnpm generate:importmap`).
+  `src/data/beatstars-catalogue.json` and **never reads the database**. The only DB access is
+  the invite server action, through `src/lib/invite-requests.ts` → `src/lib/db.ts`.
+- **S5** No CMS. Payload was removed (its admin was never used after setup; Luka reviews
+  applications from the notification email). Don't reintroduce a CMS or an admin panel — content
+  comes from BeatStars and `content.ts`, and that is a client decision, not a refactor.
 - **S3** shadcn/ui is **not installed** and there is no `components/ui/`. Don't import from
   it. Adding it is a decision to raise, not a detail to slip in.
 
 ## 4. Definition of done
 - **DoD1** `pnpm lint && pnpm test && pnpm build` all pass. Report failures verbatim. Never
   weaken, skip, or delete a test to get green.
-- **DoD2** Any collection or field change → run **both** `pnpm generate:types` and
-  `pnpm generate:importmap`, and commit the output.
 - **DoD3** "Fixed" means **merged to `main` and observed working in the deployed system**.
   Committed-on-a-branch is not fixed. A CI change is not fixed until a run passes **from
   `main`** (see G7).
@@ -82,8 +80,7 @@ pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `a
 - **G5** Conventional commits. Footer:
   `Co-Authored-By: Claude <model> <noreply@anthropic.com>`, using the model name the current
   session provides. Do not hardcode a model version in this file.
-- **G6** Merge conflicts by file class: **generated files (S2)** → regenerate, never
-  hand-merge. **`src/data/beatstars-catalogue.json`** → re-run the fetch script, never
+- **G6** Merge conflicts by file class: **`src/data/beatstars-catalogue.json`** → re-run the fetch script, never
   hand-merge. **This file** → keep both rules, then de-duplicate deliberately.
 - **G7** `.github/workflows/refresh-catalogue.yml` refreshes the catalogue twice daily and
   lands it on `main`. **Scheduled workflows only ever run the default branch's copy** —
@@ -98,30 +95,22 @@ pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `a
 - **G8** Symptom → first check: the live "Browse all N beats" number looks stale →
   `gh run list` before anything else. Nothing else surfaces a failed refresh.
 
-## 8. Database & CMS
-- **DB1** Payload's surface is deliberately `Users` + `InviteRequests`. Don't add a CMS
-  mirror of `content.ts` without also wiring the site to read it — BeatStars, not the CMS, is
-  the source of truth for beats and kits.
-- **DB2** No upload collections → no storage adapter. If an upload collection ever returns,
-  an S3/Supabase Storage adapter is **mandatory**: Vercel is serverless with no disk, and a
-  missing adapter silently writes to ephemeral storage where files vanish.
-- **DB3** Migration ritual, in order: verify `totalDocs` on live (D4) → make the change →
-  run `pnpm dev` **once, watched, as a deliberate migration** (D1) → `pnpm generate:types` +
-  `pnpm generate:importmap` → commit.
+## 8. Database
+- **DB1** Postgres holds invite requests only: `invite_requests` + `invite_requests_tracks`
+  (created by Payload originally; the new code writes the same shape — 1-based `_order`, 24-hex
+  track ids — so old and new rows read alike). `users`, `users_sessions` and `payload_*` are
+  leftovers from Payload, read by nothing. BeatStars, not the DB, is the source of truth for
+  beats and kits.
+- **DB3** Schema changes are hand-written, idempotent SQL in a transaction (D4). Nothing pushes
+  schema: not `pnpm dev`, not the build, not a deploy. Table names in `invite-requests.ts` are
+  unqualified on purpose (see its header).
 - **DB4** Connection resolves `DATABASE_URL` → `POSTGRES_URL`. The Supabase↔Vercel
   integration injects `POSTGRES_URL`; `DATABASE_URL` exists only in local `.env`. `sslmode`
   must be stripped from the URL or it overrides the explicit `ssl` option and Supabase's
-  self-signed chain is rejected. See `pgConnectionString()` in `src/payload.config.ts` —
-  don't "simplify" it.
-- **DB5** Invite-request rows are personal data (name + email). Never paste them into
+  self-signed chain is rejected. See `pgConnectionString()` in `src/lib/db.ts` — don't
+  "simplify" it. `pg` stays in `serverExternalPackages` (`next.config.ts`).
+- **DB5** Invite-request rows are personal data (Instagram handle, IP). Never paste them into
   transcripts, commits, issues, or PRs.
-- **DB7** A Payload version bump can add columns, and production never pushes schema — a
-  missing column breaks every query that selects it (admin login included). Before bumping,
-  diff `pnpm payload generate:db-schema` across the two versions (it runs with
-  `disableDBConnect`, never touches the DB; delete the generated file after). Apply any
-  additive column to prod **before** the merge deploys (D-confirm first).
-- **DB6** `/api/graphql` 500s under `pnpm dev` (Turbopack's `require(esm)` of graphql 17).
-  Production is unaffected — test GraphQL against a prod build; don't chase the dev 500.
 
 ## 9. Product & domain
 - **P1** Don't rebuild commerce or licensing. BeatStars owns checkout, leases, contracts,
@@ -190,38 +179,31 @@ never hardcode hex in components.
 - **SEC1** `next.config.ts` owns every response header. The CSP stays limited to navigation and
   embedding — **never add `media-src`/`img-src`** (the beat stream's signed-S3 redirect, P2).
   HSTS never below `max-age=63072000`; `includeSubDomains`/`preload` are the client's call (D6).
-- **SEC2** The admin cookie is `Secure` on any production server (`servedOverHttps()`,
-  `src/lib/env.ts`). A local prod build (§5) needs `ALLOW_INSECURE_ADMIN_COOKIE=1` in `.env`;
-  Vercel ignores it.
-- **SEC3** `PAYLOAD_SECRET` fails closed via `requirePayloadSecret()` (DB5); only `next build`
-  and Payload's `generate:*` commands are exempt.
+- **SEC3** The upload-claim HMAC key fails closed under 16 characters (`claimSecret()`,
+  `src/lib/track-uploads.ts`): `INVITE_CLAIM_SECRET`, falling back to the legacy `PAYLOAD_SECRET`
+  the deployment already has.
 - **SEC4** `purge-invite-tracks.yml` enforces applicant-audio retention, and fails red while
   `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` are unset as repo secrets.
 - **SEC5** `pnpm-workspace.yaml` `overrides` pin audit fixes no direct bump reaches. Re-check
   with `pnpm audit --prod`; drop one once upstream satisfies it alone.
-- **SEC6** `scripts/sql/lock-down-data-api.sql` (idempotent) closes the Supabase Data API to
-  Payload's tables. Re-run it after any schema push (D1). Disabling the Data API in the
-  dashboard is stronger still (D6).
+- **SEC6** `scripts/sql/lock-down-data-api.sql` (idempotent) closes the Supabase Data API to the
+  app's tables. Re-run it after creating any table. Disabling the Data API in the dashboard is
+  stronger still (D6).
 
 ## 11. Testing
-- **T1** Tests are colocated `*.test.ts` (`src/lib/`, `src/collections/hooks/`).
+- **T1** Tests are colocated `*.test.ts` in `src/lib/`.
   `pnpm test` / `pnpm test:watch`.
 - **T2** The invite path (env parsing, validation, dedupe, rate limiting) is the
   security-relevant surface — keep it covered and extend the tests when changing it.
-- **T3** Invite access control is verified by unit tests and against a prod build. **Not yet
-  exercised end-to-end on the deployed site** (live submit → row + Resend email); doing so
-  triggers D2.
+- **T3** The invite write path is unit-tested with a fake store, and its SQL has been run against
+  temp-table copies of the live schema. A real submit (row + Resend email) is the only end-to-end
+  test, and it triggers D2.
 
 ## 12. Environment & secrets
 - **E1** Secrets are never committed. `.env.example` documents every key the app reads —
   update it in the same commit that introduces a key.
 - **E2** `sharp` and `unrs-resolver` must stay in `allowBuilds` in `pnpm-workspace.yaml`, or
   pnpm's pre-run dependency check makes `pnpm build` exit 1.
-- **E3** `package.json` has `"type": "module"` — **required**, don't remove. Without it the
-  Payload CLI loads the config through tsx's CJS `require()` hook and dies with
-  `ERR_REQUIRE_ASYNC_MODULE`. `NODE_OPTIONS=--no-experimental-require-module` does **not**
-  fix it (it trades one error for `ERR_REQUIRE_ESM`) — don't retry that route.
-
 ## 13. Knowledge system (Obsidian vault)
 - **K1** This repo ↔ vault project **"Luka Rajhl"**; the reusable playbook ↔
   **"Client Delivery"**.
@@ -242,26 +224,25 @@ client or user request conflicts with a rule here (rebuilding checkout, a light 
 scraping at runtime), say so once with the reason, then follow the user's decision.
 
 ## 15. Open decisions — ask, don't assume
-- No dev/preview database exists; local `pnpm dev` targets production (D1). Whether to
+- No dev/preview database exists; local and preview target production (D2). Whether to
   provision one is undecided.
+- The leftover Payload tables (`users`, `users_sessions`, `payload_*`) can be dropped once the
+  removal is deployed and verified (D4). `users` still holds the old admin's password hash.
 - Branch lifetime, who merges, and stale-branch handling: undefined.
-- `graphql` is pinned to 17 while Payload's peer range is `^16.8.1`. That mismatch is what
-  DB6 is: nothing on the site uses GraphQL, so the pin has never been worth unwinding.
 
 ## 16. Reference — local-only, gitignored (see R3)
 - Current status / next steps: newest file in `docs/handoffs/`
 - Invite & access-control spec: `docs/plans/private-group-invite-payload-plan.md`
 - Full project plan: `~/.claude/plans/i-am-building-a-tender-rivest.md`
-- Post-mortems worth reading before re-debugging the same thing: the Payload production-DB
-  connection failure (three chained causes → DB4), the `type: module` CLI fix (→ E3), the
-  protected-branch refresh failure (→ G7), the CMS trim (→ DB1/DB2).
+- Post-mortems worth reading before re-debugging the same thing: the production-DB connection
+  failure (three chained causes → DB4), the protected-branch refresh failure (→ G7), the CMS trim
+  and Payload removal (→ S5/DB1).
 
 ## Commands
 ```bash
-pnpm dev                              # DANGER D1 — schema push against the production DB
+pnpm dev                              # the invite form here writes to the production DB (D2)
 pnpm build && pnpm start              # prod build (§5)
-pnpm lint · pnpm test · pnpm test:watch
-pnpm generate:types · pnpm generate:importmap
+pnpm lint · pnpm test · pnpm typecheck · pnpm test:watch
 node scripts/fetch-beatstars.mjs      # rewrites src/data/beatstars-catalogue.json
 gh run list --workflow=refresh-catalogue.yml
 

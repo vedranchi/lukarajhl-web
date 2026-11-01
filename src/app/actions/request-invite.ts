@@ -2,8 +2,8 @@
 
 import { headers } from "next/headers";
 import { validateInvite } from "@/lib/validate-invite";
-import { getPayloadClient } from "@/lib/payload";
 import { envInt } from "@/lib/env";
+import { pgInviteStore, recordInviteRequest } from "@/lib/invite-requests";
 import {
   TRACK_COUNT,
   prepareUploads,
@@ -20,16 +20,14 @@ import {
  * Server action for the Private Telegram request form.
  *
  * Flow: honeypot + time-gate (silent drop) → validation → durable IP rate
- * limit (Postgres, via the invite-requests collection) → persist the lead. CSRF
+ * limit (Postgres `invite_requests`) → store the lead and email the owner. CSRF
  * is covered by Next server actions (POST-only + same-origin enforcement).
  *
- * The owner email + status lifecycle (emailed/email_failed/duplicate) now live
- * in the collection's `afterChange` hook, which runs synchronously inside
- * `payload.create` — so a lead is always stored (even if the send later fails,
- * it's marked `email_failed` for admin resend) and the action never sends email
- * itself. The env guard below stays only to surface a friendlier "temporarily
- * unavailable" message when Resend is unconfigured. See §5/§15.1 of
- * docs/plans/private-group-invite-payload-plan.md.
+ * Storing, duplicate detection and the email + status stamp live in
+ * recordInviteRequest() (src/lib/invite-requests.ts): a lead is always stored,
+ * even if the send then fails — it is marked `email_failed` instead. The env
+ * guard at the end stays only to surface a friendlier "temporarily unavailable"
+ * message when Resend is unconfigured.
  */
 
 export type InviteResult = { ok: true } | { ok: false; error: string };
@@ -52,15 +50,8 @@ async function clientIp(): Promise<string> {
     (proxy stripped it) means skip; the honeypot and time-gate still apply. */
 async function overRateLimit(ip: string): Promise<boolean> {
   if (!ip) return false;
-  const payload = await getPayloadClient();
-  const { totalDocs } = await payload.count({
-    collection: "invite-requests",
-    where: {
-      ip: { equals: ip },
-      createdAt: { greater_than: new Date(Date.now() - RATE_WINDOW_MS).toISOString() },
-    },
-  });
-  return totalDocs >= RATE_LIMIT;
+  const recent = await pgInviteStore().countByIpSince(ip, new Date(Date.now() - RATE_WINDOW_MS));
+  return recent >= RATE_LIMIT;
 }
 
 /** Silent-drop signals shared by both steps. A bot that skips the form and
@@ -152,8 +143,6 @@ export async function requestInvite(formData: FormData): Promise<InviteResult> {
   const ip = await clientIp();
   const userAgent = hdrs.get("user-agent")?.slice(0, 500) || "";
 
-  const payload = await getPayloadClient();
-
   if (await overRateLimit(ip)) {
     return { ok: false, error: "Too many requests from your connection — try again in an hour." };
   }
@@ -173,23 +162,17 @@ export async function requestInvite(formData: FormData): Promise<InviteResult> {
     });
   }
 
-  // Persist the lead. The afterChange hook runs synchronously here: it sends the
-  // owner email and stamps status (emailed / email_failed), or skips the send for
-  // a duplicate. The lead is stored regardless (plan §15.1), so a send failure
-  // never loses it — it's marked email_failed for an admin resend.
+  // Store the lead, then email the owner (or skip the email for a duplicate).
+  // Only a failed insert throws; a failed send is stamped `email_failed` on the
+  // stored row, so a send failure never loses the lead.
   try {
-    await payload.create({
-      collection: "invite-requests",
-      draft: false,
-      data: {
-        instagram,
-        tracks,
-        status: "new", // hooks refine this → duplicate / emailed / email_failed
-        source: "invite-form",
-        ...(ip ? { ip } : {}),
-        ...(userAgent ? { userAgent } : {}),
-        ...(elapsedMs !== undefined ? { elapsedMs } : {}),
-      },
+    await recordInviteRequest({
+      instagram,
+      tracks,
+      source: "invite-form",
+      ...(ip ? { ip } : {}),
+      ...(userAgent ? { userAgent } : {}),
+      ...(elapsedMs !== undefined ? { elapsedMs } : {}),
     });
   } catch (err) {
     console.error("requestInvite: persist failed", err);

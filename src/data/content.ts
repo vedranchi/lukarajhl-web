@@ -3,8 +3,8 @@
  *
  * Beats & kits are a real BeatStars snapshot: `src/data/beatstars-catalogue.json`
  * (regenerate with `node scripts/fetch-beatstars.mjs`; auto-refreshed on a schedule
- * by .github/workflows/refresh-catalogue.yml). Everything else is authored here
- * until it moves to Payload CMS.
+ * by .github/workflows/refresh-catalogue.yml). Everything else is authored here;
+ * there is no CMS (CLAUDE.md S5).
  */
 import catalogue from "./beatstars-catalogue.json";
 import { lowestLeasePrice, splitBeatTitle } from "@/lib/catalogue";
