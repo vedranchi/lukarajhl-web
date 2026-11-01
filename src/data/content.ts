@@ -7,6 +7,7 @@
  * until it moves to Payload CMS.
  */
 import catalogue from "./beatstars-catalogue.json";
+import { lowestLeasePrice, splitBeatTitle } from "@/lib/catalogue";
 
 export type Beat = {
   n: string;
@@ -44,6 +45,15 @@ export type Social = {
 };
 /** BeatStars store root + private Telegram group. */
 export const beatstarsStore = catalogue.store;
+
+/** Canonical production origin. Absolute URLs in metadata (og:image, sitemap,
+    canonical) resolve against it, so preview deployments still point shared
+    links at the real site. */
+export const siteUrl = "https://lukarajhl.com";
+export const siteName = "Luka Rajhl";
+
+/** Snapshot timestamp of the baked catalogue — the page's real "last changed". */
+export const catalogueGeneratedAt = catalogue._generatedAt;
 /** The two YouTube channels, which serve different purposes: the tutorials
     channel ("Luka Rajhl") publishes production breakdowns and how-tos; the
     type-beat channel ("lukarajhl", @rajhlski) publishes free type beats.
@@ -104,6 +114,23 @@ export const telegramInvite = "https://t.me/+nfPjj9ktvsYwMWVk";
 
 /** Real BeatStars catalogue (top-10 snapshot — see scripts/fetch-beatstars.mjs). */
 export const beats: Beat[] = catalogue.beats;
+
+/** Cheapest lease on the front page ("$29.99"), or null if none is priced.
+    Derived, so the hero line and the share card follow a price change on the
+    next catalogue refresh instead of going stale. */
+export const leasesFrom = lowestLeasePrice(beats);
+
+/** The one line under the name in the hero: who this is and what it costs,
+    for an artist arriving from an Instagram bio link. */
+export const siteTagline = leasesFrom
+  ? `Beat producer from Skopje. Leases from ${leasesFrom}.`
+  : "Beat producer from Skopje.";
+
+/** Meta / Open Graph description: what a link preview says under the title. */
+export const siteDescription =
+  `Luka Rajhl, beat producer from Skopje. Hear his most popular beats` +
+  (leasesFrom ? `, lease them on BeatStars from ${leasesFrom}` : ", license them on BeatStars") +
+  ", and get the sound kits he makes them with.";
 
 /**
  * Client-authored kit descriptions, matched on the kit title. BeatStars' own
@@ -176,7 +203,12 @@ export const spotifyPlaylist = {
 };
 
 export type PlaylistTrack = {
+  /** Full BeatStars title — accessible names, tooltips, the desktop dock. */
   title: string;
+  /** The quoted beat name, the line that tells beats apart. */
+  name: string;
+  /** The "type beat" tags in front of the name, or null. */
+  tags: string | null;
   artist: string;
   src: string;
   total: string;
@@ -194,6 +226,7 @@ export type PlaylistTrack = {
  */
 export const playlist: PlaylistTrack[] = beats.map((b) => ({
   title: b.title,
+  ...splitBeatTitle(b.title),
   artist: "Luka Rajhl",
   src: b.stream,
   total: b.time || "0:00",

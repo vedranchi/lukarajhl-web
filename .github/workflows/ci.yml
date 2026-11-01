@@ -1,0 +1,68 @@
+name: CI
+
+# Runs the checks DoD1 already requires (`pnpm lint && pnpm test && pnpm build`)
+# so they are enforced by something other than memory.
+#
+# `main` is protected but carries no required status checks (CLAUDE.md G2), so
+# this job does not *block* a merge — a red run is a visible signal, not a gate.
+#
+# It does NOT run on refresh-catalogue.yml's automated PRs: those are opened and
+# merged with GITHUB_TOKEN, and GitHub starts no workflow runs from events that
+# token causes. That workflow runs the same checks itself before merging — keep
+# the two step lists in sync.
+#
+# Deliberately no database and no secrets: `pnpm build` prerenders the homepage
+# from committed data (S1) and the Payload config's secret guard has a
+# build-phase carve-out, so the build needs neither. That keeps CI from ever
+# touching the production database (D1).
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  # Supersede an in-flight run when a PR gets another push; never cancel main.
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+
+      # package.json has no `packageManager` field, and action-setup@v4 fails
+      # outright without a version from one place or the other. Pinned here, not
+      # in package.json, so Vercel's own pnpm selection is left untouched.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.11.0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # --frozen-lockfile makes a lockfile that drifted from package.json a
+      # failure rather than a silent re-resolve, which is what keeps the build
+      # reproducible.
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint
+
+      - run: pnpm test
+
+      - run: pnpm typecheck
+
+      - run: pnpm build
+
+      # Advisory, not blocking: a brand-new advisory against a transitive
+      # dependency should not wedge an unrelated PR. It surfaces in the log, and
+      # pnpm-workspace.yaml `overrides` is where a fix goes (SEC5).
+      - name: Audit production dependencies (advisory)
+        continue-on-error: true
+        run: pnpm audit --prod

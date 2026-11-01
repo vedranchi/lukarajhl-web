@@ -1,0 +1,74 @@
+name: Purge applicant beats past retention
+
+# Enforces the retention window that was agreed with the client: applicant audio
+# is reviewed within days, so strangers' uploads should not sit in the bucket
+# forever. scripts/purge-invite-tracks.mjs already implemented this — nothing
+# ran it, so in practice retention was unbounded and every application ever
+# submitted was still stored.
+#
+# The same sweep clears orphans (objects uploaded by someone who never finished
+# the form), which age out on exactly the same clock.
+#
+# Deleting an object does NOT delete its request row: the lead keeps the handle
+# and the file names, and its signed links simply stop resolving. Deliberate —
+# see the header of the script.
+#
+# NOTE (CLAUDE.md G7): scheduled workflows only ever run the DEFAULT branch's
+# copy of this file, so editing it on a branch changes nothing until it merges.
+#
+# Unlike refresh-catalogue.yml this job writes nothing to the repo — it needs no
+# `contents: write`, and the default read-only token is enough.
+#
+# It FAILS while SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are unset (SEC4). It
+# used to skip with a warning, but a green scheduled run is one nobody opens,
+# so retention went unenforced in silence. Red until the secrets exist is the
+# point: a retention guarantee that can lapse unnoticed isn't one.
+
+on:
+  schedule:
+    - cron: "30 4 * * 0" # Sundays, off-peak; a 90-day window does not need daily sweeps
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "List what would be deleted without deleting it"
+        type: boolean
+        default: false
+
+concurrency:
+  group: purge-invite-tracks
+  cancel-in-progress: false # never interrupt a delete mid-batch
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22 # LTS; the script uses only Node builtins + global fetch
+
+      - name: Purge objects past the retention window
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RETENTION_DAYS: ${{ vars.RETENTION_DAYS }} # optional; the script defaults to 90
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::error::SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are not set as repository secrets."
+            echo "::error::Applicant audio is NOT being purged. Add both secrets to enforce retention."
+            exit 1
+          fi
+
+          # The script logs object paths only (requests/<month>/<uuid>/N.mp3) —
+          # no handle, no email — so the run log carries no personal data
+          # (CLAUDE.md DB5). It exits non-zero on any failed list or delete.
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node scripts/purge-invite-tracks.mjs --dry-run
+          else
+            node scripts/purge-invite-tracks.mjs
+          fi

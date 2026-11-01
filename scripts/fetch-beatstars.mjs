@@ -110,6 +110,46 @@ function blurb(html, max = 58) {
   return clipped.charAt(0).toUpperCase() + clipped.slice(1).toLowerCase();
 }
 
+/**
+ * Every URL this script bakes in lands in an `href` or `src` on the live page,
+ * and the refresh workflow merges the result to production unattended. So an
+ * upstream value that is not an https URL on a BeatStars host is refused, not
+ * written: a changed or poisoned API response must fail the run red rather than
+ * ship a link to somewhere else. Unlike the shrink gate this has no override.
+ *
+ * The host check alone isn't enough: the URL builders fall back to templates
+ * like `/beat/${d.title_uri}`, so a field the API stopped sending yields
+ * `https://www.beatstars.com/beat/undefined` — right host, dead link. Any empty,
+ * "undefined", "null" or "NaN" path segment or query value is refused too.
+ */
+const HOLLOW = new Set(["", "undefined", "null", "NaN"]);
+function assertBeatStarsUrls({ beats, kits }) {
+  const ok = (value) => {
+    if (value === null) return true; // artwork is optional
+    try {
+      const url = new URL(value);
+      const onBeatStars =
+        url.protocol === "https:" && (url.hostname === "beatstars.com" || url.hostname.endsWith(".beatstars.com"));
+      const hollow =
+        url.pathname.split("/").slice(1).some((s) => HOLLOW.has(s)) ||
+        [...url.searchParams.values()].some((v) => HOLLOW.has(v));
+      return onBeatStars && !hollow;
+    } catch {
+      return false;
+    }
+  };
+  const bad = [
+    ...beats.flatMap((b) => [["beat buyUrl", b.buyUrl], ["beat image", b.image], ["beat stream", b.stream]]),
+    ...kits.flatMap((k) => [["kit buyUrl", k.buyUrl], ["kit image", k.image]]),
+  ].filter(([, value]) => !ok(value));
+  if (bad.length > 0) {
+    throw new Error(
+      `Refusing to write the catalogue: ${bad.length} URL(s) are not https on a BeatStars host ` +
+        `(first: ${bad[0][0]} = ${JSON.stringify(bad[0][1])}).`,
+    );
+  }
+}
+
 /** Previously committed snapshot, or null when missing/unreadable (first run). */
 function readPrevious(dest) {
   try {
@@ -228,6 +268,7 @@ async function main() {
   const previous = readPrevious(dest);
 
   assertSane({ beats, beatsTotal, kitsTotal }, previous);
+  assertBeatStarsUrls({ beats, kits });
 
   const out = {
     _generatedAt: new Date().toISOString(),

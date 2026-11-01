@@ -105,7 +105,7 @@ export function IpodSection() {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={track.image}
-                        alt=""
+                        alt={`${track.title} cover art`}
                         width={200}
                         height={200}
                         loading="lazy"
@@ -119,10 +119,14 @@ export function IpodSection() {
                     )}
                   </div>
                   <div className="pod-meta">
+                    {/* Name first, tags as the "artist" line: a 2-line clamp on
+                        the full title cut most names off on a phone. */}
                     <p className="pod-track" title={track.title}>
-                      {track.title}
+                      {track.name}
                     </p>
-                    <p className="pod-artist">{track.artist}</p>
+                    <p className="pod-artist" title={track.tags ?? undefined}>
+                      {track.tags ?? track.artist}
+                    </p>
                     <p className="pod-album">
                       {track.plays.toLocaleString()} plays
                     </p>
@@ -207,7 +211,14 @@ export function IpodSection() {
                     <span className="pod-row-n">
                       {current && playing ? "❙❙" : String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="pod-row-title">{t.title}</span>
+                    {/* Nearly every title opens "fakemink + … type beat", so a
+                        one-line title truncated to ten identical rows on a
+                        phone. The quoted name leads; the tags trail it on
+                        desktop and drop to a second line on mobile. */}
+                    <span className="pod-row-title" title={t.title}>
+                      <span className="pod-row-name">{t.name}</span>
+                      {t.tags ? <span className="pod-row-tags">{t.tags}</span> : null}
+                    </span>
                     <span className="pod-row-plays">{t.plays.toLocaleString()}</span>
                     <span className="pod-row-time">{t.total}</span>
                   </button>

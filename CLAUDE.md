@@ -91,9 +91,10 @@ pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `a
   protected the job must **not** `git push` to it (that fails `GH006`); it force-pushes one
   commit to a disposable carrier branch, opens a PR, and squash-merges it with
   `GITHUB_TOKEN` (needs `contents: write` **+** `pull-requests: write`). The force-push is
-  deliberate and safe — the carrier branch only ever holds that one commit. If a future
-  protection change blocks the merge too, add a repo-admin bypass allowance rather than
-  restoring a direct push.
+  deliberate and safe — the carrier branch only ever holds that one commit. `GITHUB_TOKEN`
+  events start no workflows, so the job runs CI's checks itself before merging — keep them.
+  If a future protection change blocks the merge too, add a repo-admin bypass allowance
+  rather than restoring a direct push.
 - **G8** Symptom → first check: the live "Browse all N beats" number looks stale →
   `gh run list` before anything else. Nothing else surfaces a failed refresh.
 
@@ -114,6 +115,11 @@ pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `a
   don't "simplify" it.
 - **DB5** Invite-request rows are personal data (name + email). Never paste them into
   transcripts, commits, issues, or PRs.
+- **DB7** A Payload version bump can add columns, and production never pushes schema — a
+  missing column breaks every query that selects it (admin login included). Before bumping,
+  diff `pnpm payload generate:db-schema` across the two versions (it runs with
+  `disableDBConnect`, never touches the DB; delete the generated file after). Apply any
+  additive column to prod **before** the merge deploys (D-confirm first).
 - **DB6** `/api/graphql` 500s under `pnpm dev` (Turbopack's `require(esm)` of graphql 17).
   Production is unaffected — test GraphQL against a prod build; don't chase the dev 500.
 
@@ -157,6 +163,11 @@ pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `a
   **Telegram** has no useful channel analytics — treat as a link. **Spotify** is the
   official embed iframe — don't proxy or scrape it.
 
+- **P7** Prices shown outside BeatStars (hero line, meta description, share card) derive from
+  the baked catalogue via `leasesFrom` in `content.ts` — never hardcode one, it goes stale on
+  the next refresh. `siteUrl` there is the canonical origin for every absolute URL in
+  metadata, sitemap and robots.
+
 ## 10. Design
 Palette authority is `src/app/globals.css` (`@theme` + CSS vars). Read tokens from there;
 never hardcode hex in components.
@@ -174,6 +185,23 @@ never hardcode hex in components.
   `react-hooks/purity` forbids `Date.now()` / `new Date()` in render — hoist to module scope.
 - **DS6** Fonts: system monospace today. Any retro face goes through `next/font` — never a
   CDN `<link>`.
+
+## 10a. Security invariants — the reasoning lives in the files named
+- **SEC1** `next.config.ts` owns every response header. The CSP stays limited to navigation and
+  embedding — **never add `media-src`/`img-src`** (the beat stream's signed-S3 redirect, P2).
+  HSTS never below `max-age=63072000`; `includeSubDomains`/`preload` are the client's call (D6).
+- **SEC2** The admin cookie is `Secure` on any production server (`servedOverHttps()`,
+  `src/lib/env.ts`). A local prod build (§5) needs `ALLOW_INSECURE_ADMIN_COOKIE=1` in `.env`;
+  Vercel ignores it.
+- **SEC3** `PAYLOAD_SECRET` fails closed via `requirePayloadSecret()` (DB5); only `next build`
+  and Payload's `generate:*` commands are exempt.
+- **SEC4** `purge-invite-tracks.yml` enforces applicant-audio retention, and fails red while
+  `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` are unset as repo secrets.
+- **SEC5** `pnpm-workspace.yaml` `overrides` pin audit fixes no direct bump reaches. Re-check
+  with `pnpm audit --prod`; drop one once upstream satisfies it alone.
+- **SEC6** `scripts/sql/lock-down-data-api.sql` (idempotent) closes the Supabase Data API to
+  Payload's tables. Re-run it after any schema push (D1). Disabling the Data API in the
+  dashboard is stronger still (D6).
 
 ## 11. Testing
 - **T1** Tests are colocated `*.test.ts` (`src/lib/`, `src/collections/hooks/`).
@@ -216,11 +244,9 @@ scraping at runtime), say so once with the reason, then follow the user's decisi
 ## 15. Open decisions — ask, don't assume
 - No dev/preview database exists; local `pnpm dev` targets production (D1). Whether to
   provision one is undecided.
-- `secret: process.env.PAYLOAD_SECRET || ""` masks a missing secret as a deep runtime error
-  instead of a loud boot failure.
 - Branch lifetime, who merges, and stale-branch handling: undefined.
-- `package.json` `"name"` is still `luka-app-tmp` (scaffolding leftover).
-- `POSTGRES_URL` is read in production but missing from `.env.example` (violates E1).
+- `graphql` is pinned to 17 while Payload's peer range is `^16.8.1`. That mismatch is what
+  DB6 is: nothing on the site uses GraphQL, so the pin has never been worth unwinding.
 
 ## 16. Reference — local-only, gitignored (see R3)
 - Current status / next steps: newest file in `docs/handoffs/`
