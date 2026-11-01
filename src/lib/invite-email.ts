@@ -1,27 +1,28 @@
 import { Resend } from "resend";
-import type { InviteRequest } from "@/payload-types";
 
 /**
- * Owner-notification email for a private Telegram request.
- *
- * Extracted from the server action so both the action (now) and the
- * `afterChange` collection hook (later — see
- * docs/plans/private-group-invite-payload-plan.md §5/§9) call one send path.
+ * Owner-notification email for a private Telegram request. This email is the
+ * review workflow: it carries the handle and a signed link to each beat, and
+ * Luka replies on Instagram from it.
  *
  * Contract: **never throws.** Returns `{ ok: true }` on a successful send and
  * `{ ok: false, error }` on a missing-config, transport, or Resend-API error.
- * The hook depends on this so a send failure can be recorded as
- * `status: "email_failed"` without negating the already-persisted lead.
+ * recordInviteRequest() depends on this so a send failure is stamped on the row
+ * as `status: "email_failed"` without losing the already-stored lead.
  */
 
 export type SendInviteEmailResult = { ok: true } | { ok: false; error: string };
 
 /** The subset of a lead row the email template interpolates (all validator-sanitised). */
-export type InviteEmailInput = Pick<InviteRequest, "instagram"> &
-  Partial<Pick<InviteRequest, "ip" | "createdAt" | "tracks">>;
-// `ip` stays on the row for rate limiting and admin triage, but is deliberately
-// not put in the email: it is the applicant's personal data and nothing in
-// reviewing three beats needs it.
+export type InviteEmailInput = {
+  instagram: string | null;
+  createdAt?: string | null;
+  tracks?: { path: string; originalName?: string | null; sizeBytes?: number | null; url?: string | null }[] | null;
+  // `ip` stays on the row for rate limiting, but is deliberately not put in the
+  // email: it is the applicant's personal data and nothing in reviewing three
+  // beats needs it. Accepted here only so callers can pass the row as-is.
+  ip?: string | null;
+};
 
 export async function sendInviteEmail(doc: InviteEmailInput): Promise<SendInviteEmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -44,7 +45,7 @@ export async function sendInviteEmail(doc: InviteEmailInput): Promise<SendInvite
     ...(tracks?.length
       ? tracks.flatMap((t, i) => [
           `${i + 1}. ${t.originalName || t.path}`,
-          `   ${t.url || "(link unavailable — open the request in the admin)"}`,
+          `   ${t.url || `(link unavailable: ${t.path} in the Supabase invite-tracks bucket)`}`,
         ])
       : ["(none attached)"]),
     "",

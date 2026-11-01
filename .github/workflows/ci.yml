@@ -12,9 +12,9 @@ name: CI
 # the two step lists in sync.
 #
 # Deliberately no database and no secrets: `pnpm build` prerenders the homepage
-# from committed data (S1) and the Payload config's secret guard has a
-# build-phase carve-out, so the build needs neither. That keeps CI from ever
-# touching the production database (D1).
+# from committed data (S1), and the database is only opened by the invite server
+# action at request time, so the build needs neither. That keeps CI from ever
+# touching the production database (D2).
 
 on:
   pull_request:
