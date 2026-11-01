@@ -116,12 +116,12 @@ export const telegramInvite = "https://t.me/+nfPjj9ktvsYwMWVk";
 export const beats: Beat[] = catalogue.beats;
 
 /** Cheapest lease on the front page ("$29.99"), or null if none is priced.
-    Derived, so the hero line and the share card follow a price change on the
+    Derived, so the meta description and the share card follow a price change on the
     next catalogue refresh instead of going stale. */
 export const leasesFrom = lowestLeasePrice(beats);
 
-/** The one line under the name in the hero: who this is and what it costs,
-    for an artist arriving from an Instagram bio link. */
+/** Who this is and what it costs, in one line. Used by the share card's alt
+    text only; the homepage deliberately shows no tagline under the name. */
 export const siteTagline = leasesFrom
   ? `Beat producer from Skopje. Leases from ${leasesFrom}.`
   : "Beat producer from Skopje.";
