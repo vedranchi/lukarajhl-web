@@ -1,29 +1,17 @@
 # Security overrides. Each entry is the minimum PATCHED version named by a
 # `pnpm audit` advisory, pinned inside the major range already resolved — never
-# a major bump, so no transitive API breaks. All are deep dependencies of
-# `payload` / `next` that no direct-dependency bump reaches.
-# Re-check with `pnpm audit --prod`; drop an entry once the upstream package
-# ships a range that satisfies it on its own.
-#
-# Known and deliberately NOT overridden: happy-dom (high, SSRF / import alias).
-# The fix exists only in 21.x and @lexical/headless requires ^20, so forcing it
-# is a major bump under a dependency that never asked for it. Its attack surface
-# is server-side parsing of untrusted HTML through Lexical, and this app has no
-# richText field at all. Revisit when Payload ships a Lexical on happy-dom 21.
+# a major bump, so no transitive API breaks. Each is a deep dependency that no
+# direct-dependency bump reaches. All three are build/tooling-time only:
+# `pnpm audit --prod` is clean without them.
+# Re-check with `pnpm audit`; drop an entry once the upstream package ships a
+# range that satisfies it on its own.
 overrides:
-  # SSRF + host confusion via malformed authorities (GHSA, high). ajv -> payload.
-  fast-uri: ">=3.1.6 <4"
-  # Cross-user information disclosure / parse-time confusion (high). payload fetch.
-  undici: ">=7.30.1 <8"
   # Quadratic CPU consumption in !!omap and empty merge sources (high). Build-time.
   js-yaml: ">=4.3.2 <5"
   # Unbounded memory growth + prototype write on untrusted config (high). Build-time.
   browserslist: ">=4.28.7 <5"
   # Event-loop DoS via indexed source maps (high). next -> postcss. Build-time.
   source-map-js: ">=1.2.2 <2"
-  # Detached-subtree sanitizer bypass (high). Admin-only: Monaco, which no field
-  # here uses. Minor bump inside v3 (monaco pins 3.2.7); DOMPurify's API is stable.
-  dompurify: ">=3.4.17 <4"
 
 allowBuilds:
   esbuild: true

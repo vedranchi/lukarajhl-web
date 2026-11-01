@@ -92,11 +92,20 @@ export function validateTrackInputs(files: unknown): { ok: true; files: TrackInp
   return { ok: true, files: out };
 }
 
+/** Shortest HMAC key accepted for upload claims. */
+export const MIN_CLAIM_SECRET_LENGTH = 16;
+
+/**
+ * HMAC key for upload claims. `INVITE_CLAIM_SECRET` is the name; the fallback
+ * to `PAYLOAD_SECRET` exists only because that is what the deployment already
+ * has set from when Payload signed admin sessions with it — so removing Payload
+ * didn't need an env change to keep the form working. Set the new name and the
+ * old one can go. Fails closed: an empty or short key would make claims
+ * forgeable, so uploads report "unavailable" instead.
+ */
 function claimSecret(): string | null {
-  const secret = process.env.PAYLOAD_SECRET;
-  // Fail closed: payload.config.ts falls back to "" for a missing secret, and
-  // signing a claim with an empty key would make it forgeable.
-  return secret && secret.length >= 16 ? secret : null;
+  const secret = process.env.INVITE_CLAIM_SECRET || process.env.PAYLOAD_SECRET;
+  return secret && secret.length >= MIN_CLAIM_SECRET_LENGTH ? secret : null;
 }
 
 function sign(value: string, secret: string): string {

@@ -19,7 +19,7 @@ const OLD_ENV = process.env;
 beforeEach(() => {
   process.env = {
     ...OLD_ENV,
-    PAYLOAD_SECRET: "x".repeat(64),
+    INVITE_CLAIM_SECRET: "x".repeat(64),
     SUPABASE_URL: "https://project.supabase.co",
     SUPABASE_SERVICE_ROLE_KEY: "sb_secret_test",
     INVITE_TRACKS_BUCKET: "invite-tracks",
@@ -142,12 +142,41 @@ describe("prepareUploads + verifyClaim", () => {
     }
   });
 
-  it("fails closed when PAYLOAD_SECRET is missing rather than signing with an empty key", async () => {
+  it("fails closed when no claim secret is set rather than signing with an empty key", async () => {
     mockSign();
+    delete process.env.INVITE_CLAIM_SECRET;
     delete process.env.PAYLOAD_SECRET;
     const res = await prepareUploads(three());
     expect(res.ok).toBe(false);
     expect(verifyClaim("anything", ["a"])).toBe(false);
+  });
+
+  it("fails closed on a claim secret too short to sign with", async () => {
+    mockSign();
+    process.env.INVITE_CLAIM_SECRET = "short";
+    delete process.env.PAYLOAD_SECRET;
+    expect((await prepareUploads(three())).ok).toBe(false);
+  });
+
+  it("falls back to the deployment's existing PAYLOAD_SECRET", async () => {
+    mockSign();
+    delete process.env.INVITE_CLAIM_SECRET;
+    process.env.PAYLOAD_SECRET = "y".repeat(64);
+    const res = await prepareUploads(three());
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    expect(verifyClaim(res.prepared.claim, res.prepared.targets.map((t) => t.path))).toBe(true);
+  });
+
+  it("prefers INVITE_CLAIM_SECRET over the fallback", async () => {
+    mockSign();
+    process.env.PAYLOAD_SECRET = "y".repeat(64);
+    const res = await prepareUploads(three());
+    if (!res.ok) throw new Error("expected ok");
+    const paths = res.prepared.targets.map((t) => t.path);
+    // Signed with INVITE_CLAIM_SECRET, so it must not verify under the fallback alone.
+    delete process.env.INVITE_CLAIM_SECRET;
+    expect(verifyClaim(res.prepared.claim, paths)).toBe(false);
   });
 
   it("fails closed when storage is unconfigured", async () => {
