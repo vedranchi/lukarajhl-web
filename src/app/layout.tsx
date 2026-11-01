@@ -30,7 +30,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description: siteDescription,
-  alternates: { canonical: "/" },
+  // No `alternates.canonical` here: this layout also wraps the (payload) admin
+  // segment, so a canonical set here would mark every admin view as a
+  // duplicate of the homepage. It lives in page.tsx instead.
   openGraph: {
     type: "website",
     url: "/",

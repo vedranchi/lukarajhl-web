@@ -66,7 +66,14 @@ const nextConfig: NextConfig = {
   // headers above, but it is one line and there is no reason to publish it.
   poweredByHeader: false,
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Keeps the login page out of search results. robots.txt can't: a
+      // Disallow only stops crawling, and a disallowed URL with inbound links
+      // still gets indexed URL-only. Payload's admin sends no noindex of its
+      // own. `:path*` matches zero segments, so this covers /admin itself.
+      { source: "/admin/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+    ];
   },
 };
 
