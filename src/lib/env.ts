@@ -22,19 +22,26 @@ export function envInt(raw: string | undefined, fallback: number): number {
 type EnvLike = Readonly<Record<string, string | undefined>>;
 
 /**
- * True when this process is serving a deployment that is reachable only over
- * HTTPS, which is what decides whether auth cookies may carry `Secure`.
+ * Whether auth cookies carry `Secure`. Fails closed: any production server is
+ * treated as HTTPS unless it is explicitly marked as a local http one.
  *
- * Keyed on `VERCEL_ENV` rather than `NODE_ENV` on purpose. Every Vercel
- * deployment — production and preview alike — is HTTPS-only, while `NODE_ENV`
- * is also `production` for a local `pnpm build && pnpm start` (§5), which serves
- * plain http://localhost. Gating on `NODE_ENV` would mark the cookie `Secure`
- * there, the browser would drop it, and admin login would break locally for no
- * security gain. `vercel dev` sets `VERCEL_ENV=development` and is likewise
- * excluded.
+ *  - Vercel production and preview are HTTPS-only → always `Secure`, and the
+ *    opt-out below is ignored there so a stray copy of it can't weaken prod.
+ *  - Any other `NODE_ENV=production` server → `Secure`. Keying on `VERCEL_ENV`
+ *    alone failed open: if the Vercel project stopped exposing system env vars,
+ *    or the site moved hosts, the admin cookie silently lost `Secure`.
+ *  - A local `pnpm build && pnpm start` (§5) is `NODE_ENV=production` over
+ *    plain http://localhost, where browsers that don't treat localhost as
+ *    secure drop a `Secure` cookie and admin login breaks. Set
+ *    `ALLOW_INSECURE_ADMIN_COOKIE=1` in the local `.env` for that.
+ *  - `pnpm dev` (`NODE_ENV=development`) and `vercel dev`
+ *    (`VERCEL_ENV=development`) are local http → not `Secure`.
  */
 export function servedOverHttps(env: EnvLike = process.env): boolean {
-  return env.VERCEL_ENV === "production" || env.VERCEL_ENV === "preview";
+  if (env.VERCEL_ENV === "production" || env.VERCEL_ENV === "preview") return true;
+  if (env.VERCEL_ENV === "development") return false;
+  if (env.ALLOW_INSECURE_ADMIN_COOKIE === "1") return false;
+  return env.NODE_ENV === "production";
 }
 
 /** Shortest PAYLOAD_SECRET we accept — for admin sessions and upload claims alike. */

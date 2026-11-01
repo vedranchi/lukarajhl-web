@@ -37,12 +37,25 @@ describe("servedOverHttps", () => {
     expect(servedOverHttps({ VERCEL_ENV: "preview" })).toBe(true);
   });
 
+  it("ignores the local opt-out on Vercel, so it can never weaken a deployment", () => {
+    const optOut = { ALLOW_INSECURE_ADMIN_COOKIE: "1", NODE_ENV: "production" };
+    expect(servedOverHttps({ ...optOut, VERCEL_ENV: "production" })).toBe(true);
+    expect(servedOverHttps({ ...optOut, VERCEL_ENV: "preview" })).toBe(true);
+  });
+
+  it("fails closed: a production server without VERCEL_ENV still gets Secure", () => {
+    // The Vercel project stopped exposing system env vars, or another host.
+    expect(servedOverHttps({ NODE_ENV: "production" })).toBe(true);
+    expect(servedOverHttps({ NODE_ENV: "production", ALLOW_INSECURE_ADMIN_COOKIE: "true" })).toBe(true);
+  });
+
   it("is false locally, so a Secure cookie never breaks a local login", () => {
     expect(servedOverHttps({})).toBe(false);
+    expect(servedOverHttps({ NODE_ENV: "development" })).toBe(false);
     expect(servedOverHttps({ VERCEL_ENV: "development" })).toBe(false);
     // A local `pnpm build && pnpm start` serves http://localhost under
-    // NODE_ENV=production — precisely the case NODE_ENV gating would get wrong.
-    expect(servedOverHttps({ NODE_ENV: "production" })).toBe(false);
+    // NODE_ENV=production; it opts out explicitly.
+    expect(servedOverHttps({ NODE_ENV: "production", ALLOW_INSECURE_ADMIN_COOKIE: "1" })).toBe(false);
   });
 });
 
