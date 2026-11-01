@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { siteUrl } from "@/data/content";
 
 /**
  * There was no robots.txt at all, which left `/admin` and the Payload REST API
@@ -16,5 +17,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/admin/", "/api/"],
     },
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }
