@@ -90,7 +90,9 @@ pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `a
   editing the workflow on a branch changes nothing until it merges. Because `main` is
   protected the job must **not** `git push` to it (that fails `GH006`); it force-pushes one
   commit to a disposable carrier branch, opens a PR, and squash-merges it with
-  `GITHUB_TOKEN` (needs `contents: write` **+** `pull-requests: write`). The force-push is
+  `GITHUB_TOKEN` (needs `contents: write` **+** `pull-requests: write`). Events from that
+  token start no workflows, so `ci.yml` never sees the PR — the job runs the same checks
+  itself before merging; don't drop them. The force-push is
   deliberate and safe — the carrier branch only ever holds that one commit. If a future
   protection change blocks the merge too, add a repo-admin bypass allowance rather than
   restoring a direct push.
@@ -200,8 +202,8 @@ never hardcode hex in components.
   never `NODE_ENV` — a local prod build (§5) is `NODE_ENV=production` over plain http and a
   `Secure` cookie would break local admin login.
 - **SEC3** `PAYLOAD_SECRET` fails closed via `requirePayloadSecret()` — an empty signing secret
-  makes every admin session forgeable (DB5). The build-phase carve-out keeps `next build`
-  producing an artifact; the guard fires on the first real request.
+  makes every admin session forgeable (DB5). The carve-out for `next build` and Payload's
+  `generate:*` commands keeps both working without one; the guard fires on the first real request.
 - **SEC4** `.github/workflows/purge-invite-tracks.yml` enforces the agreed retention window on
   applicant audio. It *skips*, not fails, while `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`
   are unset as repo secrets — confirm it is deleting, not skipping.
