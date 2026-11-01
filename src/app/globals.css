@@ -11,6 +11,7 @@
      toward white; ink steps down toward near-black violet. */
   --bg: #CBC6DA;
   --bg-2: #D6D2E3;
+  --bg-3: #BDB6D1; /* deepest page-ramp stop; the share card's gradient tail */
   --surface: #E7E4F0;
   --surface-2: #F2F0F8;
   --ink: #17151E;
@@ -29,6 +30,11 @@
   --amber: #8A6520;
   --magenta: #7E4E8C;
   --led: #2E8B57;
+  /* Light ink on violet / near-black (title bars, overlays). */
+  --on-accent: #F1EFF7;
+  /* Amber LED readout on a dark plate (the share card). --amber is the
+     darker one for light plates (DS2). */
+  --amber-lit: #F2B84B;
 
   /* A hairline has to work against a deeper surface now, so both step up. */
   --hair: rgba(24, 19, 46, 0.16);
@@ -931,7 +937,7 @@ a { color: inherit; text-decoration: none; }
   /* Full-bleed without 100vw (which would count the scrollbar and overflow). */
   margin-inline: calc(50% - 50vw);
   padding-inline: calc(50vw - 50%);
-  color: #F1EFF7;
+  color: var(--on-accent);
   /* Edges fade to transparent rather than to a chosen light value: the page
      plate behind this is `fixed`, so its colour at this scroll position cannot
      be matched statically. Fading out lets the real background show through and
@@ -988,7 +994,7 @@ a { color: inherit; text-decoration: none; }
 }
 .circle-form .field label { color: #9E97BA; }
 .circle-form .field input {
-  background: rgba(0, 0, 0, 0.32); color: #F1EFF7;
+  background: rgba(0, 0, 0, 0.32); color: var(--on-accent);
   border-color: rgba(255, 255, 255, 0.16);
 }
 .circle-form .field input::placeholder { color: #7E779A; }
