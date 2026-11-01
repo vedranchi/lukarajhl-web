@@ -3,11 +3,13 @@ name: CI
 # Runs the checks DoD1 already requires (`pnpm lint && pnpm test && pnpm build`)
 # so they are enforced by something other than memory.
 #
-# This matters more here than in most repos: `main` is protected but carries no
-# required status checks (CLAUDE.md G2), and refresh-catalogue.yml opens a PR and
-# **squash-merges it automatically** — straight to production (G3). Until now
-# nothing looked at those PRs at all. This job does not *block* them (no check is
-# marked required), but a red run is now a visible signal instead of silence.
+# `main` is protected but carries no required status checks (CLAUDE.md G2), so
+# this job does not *block* a merge — a red run is a visible signal, not a gate.
+#
+# It does NOT run on refresh-catalogue.yml's automated PRs: those are opened and
+# merged with GITHUB_TOKEN, and GitHub starts no workflow runs from events that
+# token causes. That workflow runs the same checks itself before merging — keep
+# the two step lists in sync.
 #
 # Deliberately no database and no secrets: `pnpm build` prerenders the homepage
 # from committed data (S1) and the Payload config's secret guard has a

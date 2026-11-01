@@ -40,9 +40,16 @@ jobs:
           ref: ${{ env.BRANCH }}
           fetch-depth: 1
 
+      # Same pin as ci.yml. Only the verify steps below need pnpm; the fetch
+      # script uses only Node builtins + global fetch.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.11.0
+
       - uses: actions/setup-node@v5
         with:
-          node-version: 22 # LTS; the script uses only Node builtins + global fetch
+          node-version: 22
+          cache: pnpm
 
       - name: Fetch latest catalogue
         run: node scripts/fetch-beatstars.mjs
@@ -51,15 +58,38 @@ jobs:
       # would change, so this gate genuinely short-circuits on a no-op run. It
       # also refuses to write (and exits 1 above) if the fetch came back
       # degraded — see the sanity gates in scripts/fetch-beatstars.mjs.
-      - name: Merge a refresh PR if the catalogue changed
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Detect a catalogue change
+        id: diff
         run: |
           if git diff --quiet -- src/data/beatstars-catalogue.json; then
             echo "No catalogue changes."
-            exit 0
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # ci.yml can't vouch for the PR below: it is opened and merged with
+      # GITHUB_TOKEN, and GitHub starts no workflow runs from events that token
+      # causes, so neither its pull_request nor its push trigger fires. The
+      # checks run here instead, before the merge. A failure leaves the run red
+      # and production on the last good catalogue (P4).
+      - name: Install dependencies
+        if: steps.diff.outputs.changed == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify (lint, test, typecheck, build — mirrors ci.yml)
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          pnpm lint
+          pnpm test
+          pnpm typecheck
+          pnpm build
+
+      - name: Merge a refresh PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           git config user.name "catalogue-bot"
           git config user.email "actions@github.com"
           git add src/data/beatstars-catalogue.json
