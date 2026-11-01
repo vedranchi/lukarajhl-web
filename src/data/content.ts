@@ -116,8 +116,8 @@ export const telegramInvite = "https://t.me/+nfPjj9ktvsYwMWVk";
 export const beats: Beat[] = catalogue.beats;
 
 /** Cheapest lease on the front page ("$29.99"), or null if none is priced.
-    Derived, so the meta description and the share card follow a price change on the
-    next catalogue refresh instead of going stale. */
+    Derived, so the share card follows a price change on the next catalogue
+    refresh instead of going stale. */
 export const leasesFrom = lowestLeasePrice(beats);
 
 /** Who this is and what it costs, in one line. Used by the share card's alt
@@ -125,12 +125,6 @@ export const leasesFrom = lowestLeasePrice(beats);
 export const siteTagline = leasesFrom
   ? `Beat producer from Skopje. Leases from ${leasesFrom}.`
   : "Beat producer from Skopje.";
-
-/** Meta / Open Graph description: what a link preview says under the title. */
-export const siteDescription =
-  `Luka Rajhl, beat producer from Skopje. Hear his most popular beats` +
-  (leasesFrom ? `, lease them on BeatStars from ${leasesFrom}` : ", license them on BeatStars") +
-  ", and get the sound kits he makes them with.";
 
 /**
  * Client-authored kit descriptions, matched on the kit title. BeatStars' own

@@ -63,7 +63,7 @@ function amount(price: string | null | undefined): number | null {
 /**
  * The cheapest paid lease among the given beats, as BeatStars formats it
  * ("$29.99"), or null when none has a price. Derived rather than hardcoded so
- * the meta description and the share card follow a price change on the next
+ * the share card follows a price change on the next
  * catalogue refresh.
  *
  * Only licenses labelled as leases count. licenseOf() in
