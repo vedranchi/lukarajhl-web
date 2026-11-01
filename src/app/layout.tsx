@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, VT323 } from "next/font/google";
-import { siteDescription, siteName, siteUrl } from "@/data/content";
+import { siteName, siteUrl } from "@/data/content";
 import "./globals.css";
 
 const mono = IBM_Plex_Mono({
@@ -23,13 +23,16 @@ const title = "Luka Rajhl - Beat Producer";
  * `opengraph-image.tsx` file convention next to this layout; Next adds the
  * og:image tags for it. X/Twitter falls back to og:image, so no separate
  * twitter-image is needed.
+ *
+ * Deliberately no `description` (and so no og:/twitter:description): the
+ * client wants a shared link to show the image and title only, without a line
+ * of copy under them. Search engines write their own snippet from the page.
  */
 export const metadata: Metadata = {
   // Resolves the relative og:image / canonical URLs. Pinned to production so a
   // link shared from a preview deployment still previews the real site.
   metadataBase: new URL(siteUrl),
   title,
-  description: siteDescription,
   // No `alternates.canonical` here: the root layout also wraps the 404 page and
   // any future route, and a canonical set here would mark each of them as a
   // duplicate of the homepage. It lives in page.tsx instead.
@@ -38,13 +41,11 @@ export const metadata: Metadata = {
     url: "/",
     siteName,
     title,
-    description: siteDescription,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title,
-    description: siteDescription,
   },
   // Google Search Console HTML-tag verification. Omitted when unset; a DNS
   // TXT record is the preferred method (see .env.example).
