@@ -6,6 +6,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig, type SharpDependency } from "payload";
 import sharp from "sharp";
 
+import { requirePayloadSecret } from "./lib/env";
 import { InviteRequests } from "./collections/InviteRequests";
 import { Users } from "./collections/Users";
 
@@ -54,7 +55,10 @@ export default buildConfig({
   // publicly-readable endpoints.
   collections: [Users, InviteRequests],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || "",
+  // Throws rather than falling back to "" — an empty signing secret makes every
+  // admin session forgeable. See requirePayloadSecret() for the build-phase
+  // carve-out that keeps `next build` from hard-failing on it.
+  secret: requirePayloadSecret(),
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },

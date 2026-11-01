@@ -114,6 +114,11 @@ pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `a
   don't "simplify" it.
 - **DB5** Invite-request rows are personal data (name + email). Never paste them into
   transcripts, commits, issues, or PRs.
+- **DB7** A Payload version bump can add columns, and production never pushes schema — a
+  missing column breaks every query that selects it (admin login included). Before bumping,
+  diff `pnpm payload generate:db-schema` across the two versions (it runs with
+  `disableDBConnect`, never touches the DB; delete the generated file after). Apply any
+  additive column to prod **before** the merge deploys (D-confirm first).
 - **DB6** `/api/graphql` 500s under `pnpm dev` (Turbopack's `require(esm)` of graphql 17).
   Production is unaffected — test GraphQL against a prod build; don't chase the dev 500.
 
@@ -175,6 +180,30 @@ never hardcode hex in components.
 - **DS6** Fonts: system monospace today. Any retro face goes through `next/font` — never a
   CDN `<link>`.
 
+## 10a. Security invariants
+- **SEC1** `next.config.ts` owns the response headers for every route (HSTS, `X-Frame-Options`,
+  nosniff, `Referrer-Policy`, `Permissions-Policy`, CSP). The CSP is deliberately limited to
+  `frame-ancestors` / `base-uri` / `object-src` / `form-action`. **Do not add `media-src` or
+  `img-src`**: the beat stream 302s to an unpredictable signed S3 host (P2) and CSP re-checks
+  every redirect hop, so an allowlist kills playback. `script-src` would need nonces →
+  middleware → loses the homepage's static prerender; revisit only if the page ever renders
+  untrusted content. HSTS is `max-age=63072000` — the value Vercel sends by default; ours
+  replaces it, so never set it lower. No `includeSubDomains`, no `preload` — both are the
+  client's call on a client-owned domain (D6).
+- **SEC2** `Users.auth` sets `cookies` explicitly. Payload's default is `secure: false`, which
+  ships the admin session cookie without `Secure`. Gate on `servedOverHttps()` (`VERCEL_ENV`),
+  never `NODE_ENV` — a local prod build (§5) is `NODE_ENV=production` over plain http and a
+  `Secure` cookie would break local admin login.
+- **SEC3** `PAYLOAD_SECRET` fails closed via `requirePayloadSecret()` — an empty signing secret
+  makes every admin session forgeable (DB5). The build-phase carve-out keeps `next build`
+  producing an artifact; the guard fires on the first real request.
+- **SEC4** `.github/workflows/purge-invite-tracks.yml` enforces the agreed retention window on
+  applicant audio. It *skips*, not fails, while `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`
+  are unset as repo secrets — confirm it is deleting, not skipping.
+- **SEC5** `pnpm-workspace.yaml` `overrides` pin patch-level fixes for audit-flagged transitive
+  deps no direct bump reaches. Re-check with `pnpm audit --prod`; drop one once upstream
+  satisfies it alone.
+
 ## 11. Testing
 - **T1** Tests are colocated `*.test.ts` (`src/lib/`, `src/collections/hooks/`).
   `pnpm test` / `pnpm test:watch`.
@@ -216,11 +245,9 @@ scraping at runtime), say so once with the reason, then follow the user's decisi
 ## 15. Open decisions — ask, don't assume
 - No dev/preview database exists; local `pnpm dev` targets production (D1). Whether to
   provision one is undecided.
-- `secret: process.env.PAYLOAD_SECRET || ""` masks a missing secret as a deep runtime error
-  instead of a loud boot failure.
 - Branch lifetime, who merges, and stale-branch handling: undefined.
-- `package.json` `"name"` is still `luka-app-tmp` (scaffolding leftover).
-- `POSTGRES_URL` is read in production but missing from `.env.example` (violates E1).
+- `graphql` is pinned to 17 while Payload's peer range is `^16.8.1`. That mismatch is what
+  DB6 is: nothing on the site uses GraphQL, so the pin has never been worth unwinding.
 
 ## 16. Reference — local-only, gitignored (see R3)
 - Current status / next steps: newest file in `docs/handoffs/`
