@@ -205,6 +205,12 @@ never hardcode hex in components.
 - **SEC4** `.github/workflows/purge-invite-tracks.yml` enforces the agreed retention window on
   applicant audio. It *skips*, not fails, while `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`
   are unset as repo secrets — confirm it is deleting, not skipping.
+- **SEC6** Payload's tables live in Supabase's `public` schema, which the Data API exposes, and
+  Supabase grants `anon`/`authenticated` on every new table there by default. With RLS off,
+  the publishable key reads `users` (hashes) and `invite_requests` and can INSERT an admin.
+  `scripts/sql/lock-down-data-api.sql` (idempotent) enables RLS and revokes those grants;
+  Payload connects as `postgres` (BYPASSRLS) and is unaffected. Re-run it after any schema
+  push (D1). Nothing uses the Data API, so disabling it in the dashboard is stronger still (D6).
 - **SEC5** `pnpm-workspace.yaml` `overrides` pin patch-level fixes for audit-flagged transitive
   deps no direct bump reaches. Re-check with `pnpm audit --prod`; drop one once upstream
   satisfies it alone.
