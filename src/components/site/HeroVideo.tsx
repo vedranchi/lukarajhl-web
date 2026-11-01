@@ -17,7 +17,7 @@ export function HeroVideo({ video }: { video: LatestVideo }) {
         <img
           className="hero-kit-art hero-vid-thumb"
           src={video.thumbnail}
-          alt=""
+          alt={`${video.title} video thumbnail`}
           width={480}
           height={360}
           decoding="async"

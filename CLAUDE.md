@@ -162,6 +162,11 @@ pnpm · ESLint (no Prettier) · Vitest (no e2e). `src/`, alias `@/*`. Layout: `a
   **Telegram** has no useful channel analytics — treat as a link. **Spotify** is the
   official embed iframe — don't proxy or scrape it.
 
+- **P7** Prices shown outside BeatStars (hero line, meta description, share card) derive from
+  the baked catalogue via `leasesFrom` in `content.ts` — never hardcode one, it goes stale on
+  the next refresh. `siteUrl` there is the canonical origin for every absolute URL in
+  metadata, sitemap and robots.
+
 ## 10. Design
 Palette authority is `src/app/globals.css` (`@theme` + CSS vars). Read tokens from there;
 never hardcode hex in components.

@@ -67,7 +67,7 @@ export async function ChannelsSection() {
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
                                 src={video.thumbnail}
-                                alt=""
+                                alt={`${video.title} video thumbnail`}
                                 width={480}
                                 height={360}
                                 loading="lazy"

@@ -896,8 +896,18 @@ a { color: inherit; text-decoration: none; }
 .pod-row.is-current { background: rgba(255, 255, 255, 0.85); }
 .pod-row-n { font-size: 0.72rem; color: var(--faint); font-variant-numeric: tabular-nums; }
 .pod-row.is-current .pod-row-n { color: var(--accent); }
-.pod-row-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.88rem; }
-.pod-row.is-current .pod-row-title { color: var(--accent-hi); }
+/* Name + tags. One line on desktop, name first and never the part that gets
+   cut: the tags shrink and ellipsize before the name does. Stacks under 720px. */
+.pod-row-title {
+  min-width: 0; display: flex; align-items: baseline; gap: 12px;
+  white-space: nowrap; font-size: 0.88rem;
+}
+.pod-row-name { flex: 0 0 auto; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.pod-row-tags {
+  flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+  font-size: 0.72rem; color: var(--faint);
+}
+.pod-row.is-current .pod-row-name { color: var(--accent-hi); }
 .pod-row-plays, .pod-row-time { font-size: 0.72rem; color: var(--faint); font-variant-numeric: tabular-nums; }
 
 .pod-foot {
@@ -1140,6 +1150,8 @@ a { color: inherit; text-decoration: none; }
   .pod { width: min(290px, 86vw); }
   .pod-row { grid-template-columns: 28px 1fr auto; gap: 11px; padding: 12px 8px; }
   .pod-row-plays { display: none; }
+  .pod-row-title { flex-direction: column; align-items: stretch; gap: 3px; }
+  .pod-row-name, .pod-row-tags { flex: none; }
   .pod-wheel { width: 172px; height: 172px; }
   .pod-centre { width: 66px; height: 66px; }
   .circle-form { max-width: none; }

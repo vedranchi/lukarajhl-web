@@ -37,7 +37,7 @@ export function KitsSection() {
                     // asset from BeatStars server-side. Loading it directly keeps
                     // this as plain cross-origin media, like the audio stream (P2).
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={k.image} alt="" width={400} height={400} loading="lazy" decoding="async" />
+                    <img src={k.image} alt={`${k.file} cover art`} width={400} height={400} loading="lazy" decoding="async" />
                   ) : (
                     <BeatStarsIcon aria-hidden="true" />
                   )}
@@ -65,7 +65,7 @@ export function KitsSection() {
             >
               {bundleKit.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={bundleKit.image} alt="" width={400} height={400} loading="lazy" decoding="async" />
+                <img src={bundleKit.image} alt={`${bundleKit.file} cover art`} width={400} height={400} loading="lazy" decoding="async" />
               ) : (
                 <BeatStarsIcon aria-hidden="true" />
               )}

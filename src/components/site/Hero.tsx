@@ -1,7 +1,7 @@
 import { Reveal } from "./Reveal";
 import { ScrollLink } from "./ScrollLink";
 import { HeroVideo } from "./HeroVideo";
-import { beatstarsStore, featuredKit, youtubeTutorialsChannelId } from "@/data/content";
+import { beatstarsStore, featuredKit, siteTagline, youtubeTutorialsChannelId } from "@/data/content";
 import { fetchLatestVideo } from "@/lib/youtube";
 
 export async function Hero() {
@@ -14,6 +14,11 @@ export async function Hero() {
       <div className="hero-lede">
         <Reveal>
           <h1 className="hero-name">LUKA RAJHL</h1>
+          {/* The name alone doesn't say what he does, and the column beside it is
+              usually someone else's face on a tutorial thumbnail. This line is
+              what tells an artist from an Instagram link they're in the right
+              place. The price is derived from the catalogue (content.ts). */}
+          <p className="hero-sub">{siteTagline}</p>
         </Reveal>
 
         {/* One primary action. The store lives in the beat-store card further down,
@@ -51,7 +56,7 @@ export async function Hero() {
               <img
                 className="hero-kit-art"
                 src={featuredKit.image}
-                alt=""
+                alt={`${featuredKit.file} cover art`}
                 width={400}
                 height={400}
                 decoding="async"
