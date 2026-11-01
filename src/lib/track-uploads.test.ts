@@ -216,24 +216,43 @@ describe("signDownloadUrl / deleteObjects", () => {
 });
 
 describe("recentUploadCount / uploadsAreFlooded", () => {
-  const iso = (minutesAgo: number) => new Date(Date.now() - minutesAgo * 60_000).toISOString();
+  // Pinned mid-month by default. The month lookback depends on the date, and an
+  // unpinned clock made the first test fail on the 1st of every month.
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-06-15T12:00:00Z"));
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
-  /** list returns folders (id:null) at the month prefix, files one level down. */
+  const iso = (minutesAgo: number) => new Date(Date.now() - minutesAgo * 60_000).toISOString();
+  const monthOf = (createdAt: string) => createdAt.slice(0, 7);
+
+  /** list returns folders (id:null) at the month prefix, files one level down.
+      Each file lives under the month it was created in, like the real bucket,
+      so a walk of two months never sees the same object twice. */
   function mockBucket(files: { created_at: string }[]) {
     return vi.fn().mockImplementation((_url: string, init: { body: string }) => {
-      const { prefix } = JSON.parse(init.body);
-      const isMonth = /^requests\/\d{4}-\d{2}$/.test(prefix);
-      return Promise.resolve({
-        ok: true,
-        json: async () => (isMonth ? [{ name: "folder", id: null }] : files),
-      });
+      const { prefix } = JSON.parse(init.body) as { prefix: string };
+      const month = /^requests\/(\d{4}-\d{2})$/.exec(prefix)?.[1];
+      const folder = /^requests\/(\d{4}-\d{2})\/folder$/.exec(prefix)?.[1];
+      const rows = month
+        ? [{ name: "folder", id: null }]
+        : files.filter((f) => monthOf(f.created_at) === folder);
+      return Promise.resolve({ ok: true, json: async () => rows });
     });
   }
 
   it("counts only objects from the last hour, ignoring older ones", async () => {
     vi.stubGlobal("fetch", mockBucket([{ created_at: iso(10) }, { created_at: iso(30) }, { created_at: iso(240) }]));
-    // Two of the three are inside the window. Mid-month both lookback prefixes
-    // are the same month and collapse to one walk; on the 1st they differ.
+    expect(await recentUploadCount()).toBe(2);
+  });
+
+  it("still sees last month's folder just after midnight on the 1st", async () => {
+    vi.setSystemTime(new Date("2026-07-01T00:20:00Z"));
+    // 10 min ago is July; 30 and 240 min ago are June, a different prefix.
+    vi.stubGlobal("fetch", mockBucket([{ created_at: iso(10) }, { created_at: iso(30) }, { created_at: iso(240) }]));
     expect(await recentUploadCount()).toBe(2);
   });
 
