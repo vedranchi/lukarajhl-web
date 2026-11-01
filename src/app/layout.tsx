@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   // link shared from a preview deployment still previews the real site.
   metadataBase: new URL(siteUrl),
   title,
-  // No `alternates.canonical` here: this layout also wraps the (payload) admin
-  // segment, so a canonical set here would mark every admin view as a
+  // No `alternates.canonical` here: the root layout also wraps the 404 page and
+  // any future route, and a canonical set here would mark each of them as a
   // duplicate of the homepage. It lives in page.tsx instead.
   openGraph: {
     type: "website",
