@@ -56,8 +56,8 @@ export default buildConfig({
   collections: [Users, InviteRequests],
   editor: lexicalEditor(),
   // Throws rather than falling back to "" — an empty signing secret makes every
-  // admin session forgeable. See requirePayloadSecret() for the build-phase
-  // carve-out that keeps `next build` from hard-failing on it.
+  // admin session forgeable. See requirePayloadSecret() for the carve-out that
+  // keeps `next build` and Payload's `generate:*` commands from hard-failing.
   secret: requirePayloadSecret(),
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),

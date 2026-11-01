@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MIN_SECRET_LENGTH, envInt, requirePayloadSecret, servedOverHttps } from "./env";
+import { MIN_SECRET_LENGTH, envInt, isPayloadCodegen, requirePayloadSecret, servedOverHttps } from "./env";
 
 describe("envInt", () => {
   it("falls back when unset", () => {
@@ -72,5 +72,21 @@ describe("requirePayloadSecret", () => {
 
   it("still throws at runtime when the build phase is over", () => {
     expect(() => requirePayloadSecret({ NEXT_PHASE: "phase-production-server" })).toThrow();
+  });
+});
+
+describe("isPayloadCodegen", () => {
+  const bin = ["/usr/bin/node", "/repo/node_modules/payload/bin.js"];
+
+  it("matches the Payload code generators DoD2 and DB7 run", () => {
+    expect(isPayloadCodegen([...bin, "generate:types"])).toBe(true);
+    expect(isPayloadCodegen([...bin, "generate:importmap"])).toBe(true);
+    expect(isPayloadCodegen([...bin, "generate:db-schema"])).toBe(true);
+  });
+
+  it("does not exempt the server or commands that touch the database", () => {
+    expect(isPayloadCodegen(["/usr/bin/node", "/repo/node_modules/next/dist/bin/next", "start"])).toBe(false);
+    expect(isPayloadCodegen([...bin, "migrate"])).toBe(false);
+    expect(isPayloadCodegen([...bin, "run", "scripts/seed.ts"])).toBe(false);
   });
 });

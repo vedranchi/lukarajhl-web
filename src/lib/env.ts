@@ -37,7 +37,7 @@ export function servedOverHttps(env: EnvLike = process.env): boolean {
   return env.VERCEL_ENV === "production" || env.VERCEL_ENV === "preview";
 }
 
-/** Shortest secret we accept. Mirrors the floor in src/lib/track-uploads.ts. */
+/** Shortest PAYLOAD_SECRET we accept — for admin sessions and upload claims alike. */
 export const MIN_SECRET_LENGTH = 16;
 
 /**
@@ -47,19 +47,34 @@ export const MIN_SECRET_LENGTH = 16;
  * guessed, and the admin panel is the only thing standing in front of the
  * applicants' personal data (CLAUDE.md DB5). Fail closed instead.
  *
- * `isBuild` exempts `next build`: the config is imported to collect routes, and
- * a build that has no runtime secret should still produce an artifact rather
- * than hard-fail the pipeline. The guard still fires on the first real request.
+ * `exempt` covers the two cases that import the config but never sign anything:
+ *  - `next build`, which collects routes. A build with no runtime secret should
+ *    still produce an artifact; the guard fires on the first real request.
+ *  - Payload's code generators (`generate:types`, `generate:importmap`,
+ *    `generate:db-schema`), which DoD2 and DB7 require on any machine, including
+ *    a clean clone or CI with no secret. See isPayloadCodegen().
  */
 export function requirePayloadSecret(
   env: EnvLike = process.env,
-  isBuild = env.NEXT_PHASE === "phase-production-build",
+  exempt = env.NEXT_PHASE === "phase-production-build" || isPayloadCodegen(),
 ): string {
   const secret = env.PAYLOAD_SECRET;
   if (secret && secret.length >= MIN_SECRET_LENGTH) return secret;
-  if (isBuild) return secret ?? "";
+  if (exempt) return secret ?? "";
   throw new Error(
     `PAYLOAD_SECRET is missing or shorter than ${MIN_SECRET_LENGTH} characters. ` +
       "Set it before starting the server — an empty secret makes admin sessions forgeable.",
   );
+}
+
+/**
+ * True when this process is the Payload CLI running a `generate:*` command.
+ * Those only read the config to emit files (generate:db-schema even sets
+ * `disableDBConnect`), so they have no use for the secret. Keyed on argv
+ * because the CLI sets no env var of its own for them; `next start` and the
+ * migrate/run commands never match, so the guard still applies everywhere a
+ * session or a database write can happen.
+ */
+export function isPayloadCodegen(argv: readonly string[] = process.argv): boolean {
+  return argv.slice(2).some((arg) => arg.startsWith("generate:"));
 }

@@ -24,6 +24,7 @@
  */
 
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { MIN_SECRET_LENGTH } from "./env";
 
 /** Exactly three, per the brief: an applicant's three best solo beats. */
 export const TRACK_COUNT = 3;
@@ -94,9 +95,10 @@ export function validateTrackInputs(files: unknown): { ok: true; files: TrackInp
 
 function claimSecret(): string | null {
   const secret = process.env.PAYLOAD_SECRET;
-  // Fail closed: payload.config.ts falls back to "" for a missing secret, and
-  // signing a claim with an empty key would make it forgeable.
-  return secret && secret.length >= 16 ? secret : null;
+  // Fail closed even though requirePayloadSecret() guards the same var: its
+  // build/codegen carve-out can hand Payload "", and a claim signed with an
+  // empty key would be forgeable.
+  return secret && secret.length >= MIN_SECRET_LENGTH ? secret : null;
 }
 
 function sign(value: string, secret: string): string {
