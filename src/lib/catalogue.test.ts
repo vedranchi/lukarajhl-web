@@ -32,8 +32,24 @@ describe("splitBeatTitle", () => {
     expect(splitBeatTitle('"prague" | esdeekid type beat')).toEqual({ name: "prague", tags: "esdeekid type beat" });
   });
 
+  it("drops separators on both sides of the quotes, not just at the edges", () => {
+    expect(splitBeatTitle('fakemink type beat - "go away" | prod. luka')).toEqual({
+      name: "go away",
+      tags: "fakemink type beat · prod. luka",
+    });
+  });
+
   it("falls back to the last dash when nothing is quoted", () => {
     expect(splitBeatTitle("feng type beat - white noise")).toEqual({ name: "white noise", tags: "feng type beat" });
+  });
+
+  it("treats a spaced en or em dash like a hyphen in the fallback", () => {
+    expect(splitBeatTitle("feng type beat – white noise")).toEqual({ name: "white noise", tags: "feng type beat" });
+    expect(splitBeatTitle("feng type beat — white noise")).toEqual({ name: "white noise", tags: "feng type beat" });
+  });
+
+  it("does not split on an unspaced hyphen inside a word", () => {
+    expect(splitBeatTitle("lo-fi")).toEqual({ name: "lo-fi", tags: null });
   });
 
   it("returns the whole title as the name when there is nothing to split", () => {
@@ -52,7 +68,10 @@ describe("splitBeatTitle", () => {
 });
 
 describe("lowestLeasePrice", () => {
-  const beat = (price: string | null) => ({ license: { price } });
+  // Labels as scripts/fetch-beatstars.mjs licenseOf() writes them.
+  const beat = (price: string | null, label = price ? `Lease from ${price}` : "Lease available") => ({
+    license: { label, price },
+  });
 
   it("returns the cheapest paid price as written", () => {
     expect(lowestLeasePrice([beat("$34.99"), beat("$29.99"), beat("$49.99")])).toBe("$29.99");
@@ -65,5 +84,10 @@ describe("lowestLeasePrice", () => {
   it("is null when nothing has a price", () => {
     expect(lowestLeasePrice([])).toBeNull();
     expect(lowestLeasePrice([beat(null)])).toBeNull();
+  });
+
+  it("never advertises an exclusive-only price as the lease floor", () => {
+    expect(lowestLeasePrice([beat("$19.99", "Exclusive only"), beat("$29.99")])).toBe("$29.99");
+    expect(lowestLeasePrice([beat("$19.99", "Exclusive only")])).toBeNull();
   });
 });
