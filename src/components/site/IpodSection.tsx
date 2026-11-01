@@ -124,7 +124,9 @@ export function IpodSection() {
                     <p className="pod-track" title={track.title}>
                       {track.name}
                     </p>
-                    <p className="pod-artist">{track.tags ?? track.artist}</p>
+                    <p className="pod-artist" title={track.tags ?? undefined}>
+                      {track.tags ?? track.artist}
+                    </p>
                     <p className="pod-album">
                       {track.plays.toLocaleString()} plays
                     </p>

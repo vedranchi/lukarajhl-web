@@ -36,8 +36,9 @@ export function KitsSection() {
                     // Plain <img>, not next/image: the optimizer would refetch the
                     // asset from BeatStars server-side. Loading it directly keeps
                     // this as plain cross-origin media, like the audio stream (P2).
+                    // alt="": the link's own text already names it, so a descriptive alt is read twice.
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={k.image} alt={`${k.file} cover art`} width={400} height={400} loading="lazy" decoding="async" />
+                    <img src={k.image} alt="" width={400} height={400} loading="lazy" decoding="async" />
                   ) : (
                     <BeatStarsIcon aria-hidden="true" />
                   )}

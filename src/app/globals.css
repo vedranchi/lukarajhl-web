@@ -797,7 +797,12 @@ a { color: inherit; text-decoration: none; }
   margin: 0; font-size: 11.5px; font-weight: 700; color: #16151B; line-height: 1.28;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-.pod-artist { margin: 3px 0 0; font-size: 10.5px; color: #4B4954; line-height: 1.3; }
+/* One line, always: the tags vary in length, and a wrapping line would move the
+   click wheel under the user's thumb from track to track. */
+.pod-artist {
+  margin: 3px 0 0; font-size: 10.5px; color: #4B4954; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .pod-album { margin: 1px 0 0; font-size: 10.5px; color: #6E6B7A; line-height: 1.3; }
 
 .pod-scrub { display: flex; align-items: center; gap: 7px; padding: 6px 8px 9px; }
