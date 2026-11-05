@@ -1,10 +1,10 @@
 {
-  "_generatedAt": "2026-11-04T22:57:27.895Z",
+  "_generatedAt": "2026-11-05T13:37:57.808Z",
   "_source": "BeatStars public Algolia index + v2 read API (see scripts/fetch-beatstars.mjs)",
   "_popularityMetric": "activities.play (BeatStars play count)",
   "store": "https://www.beatstars.com/rajhl",
   "totals": {
-    "beats": 299,
+    "beats": 300,
     "kits": 5
   },
   "shown": {
